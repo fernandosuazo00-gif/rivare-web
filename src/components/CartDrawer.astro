@@ -58,8 +58,8 @@ const catalog = await Promise.all(
 
     <div data-cart-foot hidden class="border-t border-sand px-gutter py-5 space-y-4">
       <div class="flex items-baseline justify-between text-meta">
-        <span class="uppercase tracking-[0.14em]">Total</span>
-        <span data-cart-total class="text-ink">A confirmar</span>
+        <span class="uppercase tracking-[0.14em]">Subtotal</span>
+        <span data-cart-total class="text-ink tabular-nums">A confirmar</span>
       </div>
       <p class="text-[0.75rem] leading-relaxed text-taupe-deep">
         El pedido se coordina y confirma por WhatsApp. No se procesan pagos en el sitio.
@@ -151,6 +151,9 @@ const catalog = await Promise.all(
       if (p.priceHnl != null) priced += p.priceHnl * line.qty;
       else allPriced = false;
 
+      const unit = p.priceHnl != null ? formatPrice(p.priceHnl) : '';
+      const lineTotal = p.priceHnl != null ? formatPrice(p.priceHnl * line.qty) : 'A consultar';
+
       const li = document.createElement('li');
       li.className = 'flex gap-4 p-gutter';
       li.innerHTML = `
@@ -158,9 +161,12 @@ const catalog = await Promise.all(
           <img src="${p.thumb}" alt="${p.name} — Eau de Parfum RIVÂRE" width="68" height="86" class="w-full h-full object-cover" loading="lazy" />
         </a>
         <div class="flex-1 min-w-0">
-          <a href="${p.href}" class="font-display text-[1.35rem] leading-tight">${p.name}</a>
+          <div class="flex items-baseline justify-between gap-3">
+            <a href="${p.href}" class="font-display text-[1.35rem] leading-tight">${p.name}</a>
+            <span class="text-meta tabular-nums shrink-0">${lineTotal}</span>
+          </div>
           <p class="text-[0.75rem] italic text-taupe-deep">Inspirado en ${p.inspiredBy}</p>
-          <p class="text-[0.7rem] uppercase tracking-[0.12em] text-taupe-deep mt-0.5">EDP · 50 ml</p>
+          <p class="text-[0.7rem] uppercase tracking-[0.12em] text-taupe-deep mt-0.5">EDP · 50 ml${unit ? ` · ${unit} c/u` : ''}</p>
           <div class="flex items-center justify-between mt-3">
             <div class="inline-flex items-center border border-sand">
               <button type="button" data-dec="${p.slug}" class="w-9 h-9 grid place-items-center hover:bg-ivory transition-colors" aria-label="Quitar una unidad de ${p.name}">&minus;</button>
@@ -187,7 +193,14 @@ const catalog = await Promise.all(
     const waEl = $<HTMLAnchorElement>('[data-cart-wa]');
     if (waEl) {
       waEl.href = waLink(
-        cartOrderText(valid.map((l) => ({ name: items[l.slug].name, inspiredBy: items[l.slug].inspiredBy, qty: l.qty }))),
+        cartOrderText(
+          valid.map((l) => ({
+            name: items[l.slug].name,
+            inspiredBy: items[l.slug].inspiredBy,
+            qty: l.qty,
+            priceHnl: items[l.slug].priceHnl,
+          })),
+        ),
       );
     }
   }

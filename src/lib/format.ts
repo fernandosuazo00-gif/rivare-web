@@ -1,13 +1,7 @@
-import { SITE } from '@/data/site';
-
-/** Format a Lempira price, or a graceful placeholder while prices are pending. */
+/** Format a Lempira amount as "L.600" / "L.1,200". */
 export function formatPrice(hnl: number | null): string {
   if (hnl == null) return 'Precio a consultar';
-  return new Intl.NumberFormat('es-HN', {
-    style: 'currency',
-    currency: SITE.currency,
-    maximumFractionDigits: 0,
-  }).format(hnl);
+  return `L.${new Intl.NumberFormat('es-HN', { maximumFractionDigits: 0 }).format(hnl)}`;
 }
 
 export const PRICE_PENDING_NOTE = 'Confirmá el precio y la disponibilidad por WhatsApp.';

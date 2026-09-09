@@ -34,7 +34,7 @@ export interface Product {
   /** Pirámide de la fragancia que INSPIRA (no es la fórmula de RIVÂRE). */
   notes: { top: string[]; heart: string[]; base: string[] };
   image: ImageMetadata;
-  /** Precio en Lempiras. `null` mientras RIVÂRE no lo confirme. */
+  /** Precio en Lempiras (L.). Toda la línea: 600. `null` = "Precio a consultar". */
   priceHnl: number | null;
 }
 
@@ -65,7 +65,7 @@ export const products: Product[] = [
       base: ['Cedro', 'Resina de abeto'],
     },
     image: amber,
-    priceHnl: null,
+    priceHnl: 600,
   },
   {
     slug: 'azure',
@@ -82,7 +82,7 @@ export const products: Product[] = [
       base: ['Ambroxan', 'Cedro'],
     },
     image: azure,
-    priceHnl: null,
+    priceHnl: 600,
   },
   {
     slug: 'bianco',
@@ -99,7 +99,7 @@ export const products: Product[] = [
       base: ['Almizcle', 'Sándalo'],
     },
     image: bianco,
-    priceHnl: null,
+    priceHnl: 600,
   },
   {
     slug: 'bloom',
@@ -116,7 +116,7 @@ export const products: Product[] = [
       base: ['Pachulí', 'Almizcle'],
     },
     image: bloom,
-    priceHnl: null,
+    priceHnl: 600,
   },
   {
     slug: 'cielo',
@@ -133,7 +133,7 @@ export const products: Product[] = [
       base: ['Almizcle blanco', 'Ámbar', 'Vainilla'],
     },
     image: cielo,
-    priceHnl: null,
+    priceHnl: 600,
   },
   {
     slug: 'diva',
@@ -150,7 +150,7 @@ export const products: Product[] = [
       base: ['Haba tonka', 'Cacao'],
     },
     image: diva,
-    priceHnl: null,
+    priceHnl: 600,
   },
   {
     slug: 'donna',
@@ -167,7 +167,7 @@ export const products: Product[] = [
       base: ['Vainilla bourbon', 'Madera guayaco'],
     },
     image: donna,
-    priceHnl: null,
+    priceHnl: 600,
   },
   {
     slug: 'libre',
@@ -184,7 +184,7 @@ export const products: Product[] = [
       base: ['Vainilla', 'Almizcle', 'Cedro'],
     },
     image: libre,
-    priceHnl: null,
+    priceHnl: 600,
   },
   {
     slug: 'lumen',
@@ -201,7 +201,7 @@ export const products: Product[] = [
       base: ['Maderas', 'Ambrox'],
     },
     image: lumen,
-    priceHnl: null,
+    priceHnl: 600,
   },
   {
     slug: 'nomada',
@@ -218,7 +218,7 @@ export const products: Product[] = [
       base: ['Benjuí', 'Pachulí', 'Vainilla'],
     },
     image: nomada,
-    priceHnl: null,
+    priceHnl: 600,
   },
   {
     slug: 'ombre',
@@ -235,7 +235,7 @@ export const products: Product[] = [
       base: ['Ámbar', 'Pachulí', 'Musgo'],
     },
     image: ombre,
-    priceHnl: null,
+    priceHnl: 600,
   },
   {
     slug: 'rose',
@@ -252,7 +252,7 @@ export const products: Product[] = [
       base: ['Vainilla', 'Almizcle', 'Incienso'],
     },
     image: rose,
-    priceHnl: null,
+    priceHnl: 600,
   },
   {
     slug: 'royale',
@@ -269,7 +269,7 @@ export const products: Product[] = [
       base: ['Vainilla', 'Madera guayaco', 'Sándalo'],
     },
     image: royale,
-    priceHnl: null,
+    priceHnl: 600,
   },
   {
     slug: 'terra',
@@ -286,7 +286,7 @@ export const products: Product[] = [
       base: ['Cuero', 'Cedro', 'Ámbar'],
     },
     image: terra,
-    priceHnl: null,
+    priceHnl: 600,
   },
   {
     slug: 'uomo',
@@ -303,7 +303,7 @@ export const products: Product[] = [
       base: ['Maderas', 'Vainilla bourbon'],
     },
     image: uomo,
-    priceHnl: null,
+    priceHnl: 600,
   },
 ];
 

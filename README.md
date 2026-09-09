@@ -52,7 +52,7 @@ Editar en `src/data/site.ts` cuando RIVÂRE los confirme:
 
 | Campo | Estado |
 |---|---|
-| Precios de las fragancias | `priceHnl: null` en `products.ts` → se muestra "Precio a consultar" |
+| Precios de las fragancias | **L.600** por perfume (`priceHnl: 600` en `products.ts`). El subtotal del carrito es 600 × cantidad. |
 | Instagram | `instagramUrl: null` |
 | Dirección / punto de entrega | `addressLine: null` |
 | Horario de atención | `hours: null` |
