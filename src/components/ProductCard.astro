@@ -33,20 +33,18 @@ const delay = Math.min(index, 5) * 70;
     </div>
 
     <div class="pt-4">
-      <div class="flex items-baseline justify-between gap-3">
-        <h3 class="font-display text-[1.6rem] leading-none">{product.name}</h3>
-        <span class="text-meta text-taupe-deep whitespace-nowrap">{formatPrice(product.priceHnl)}</span>
-      </div>
-      <p class="mt-1.5 font-display italic text-[1.05rem] text-taupe-deep">
+      <h3 class="font-display text-[1.5rem] sm:text-[1.7rem] leading-tight">{product.name}</h3>
+      <p class="mt-1 font-display italic text-[1rem] sm:text-[1.05rem] text-taupe-deep">
         Inspirado en {product.inspiredBy}
       </p>
-      <p class="mt-1 text-[0.72rem] uppercase tracking-[0.14em] text-taupe-deep">
-        Eau de Parfum · 50 ml
-      </p>
+      <div class="mt-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 text-[0.7rem] uppercase tracking-[0.13em] text-taupe-deep">
+        <span>Eau de Parfum · 50 ml</span>
+        <span class="whitespace-nowrap normal-case tracking-normal text-[0.8125rem]">{formatPrice(product.priceHnl)}</span>
+      </div>
     </div>
   </a>
 
   <div class="mt-4 lg:opacity-0 lg:translate-y-1 lg:transition lg:duration-300 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 lg:group-focus-within:opacity-100 lg:group-focus-within:translate-y-0">
-    <AddToCart slug={product.slug} variant="compact" label="Agregar a la selección" />
+    <AddToCart slug={product.slug} variant="compact" label="Agregar" />
   </div>
 </article>
