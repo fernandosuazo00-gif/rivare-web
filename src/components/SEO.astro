@@ -1,0 +1,80 @@
+---
+import { SITE } from '@/data/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Path-relative or absolute image for OG. Defaults to /og-image.jpg */
+  image?: string;
+  /** 'website' | 'article' | 'product' */
+  type?: string;
+  noindex?: boolean;
+  /** Extra JSON-LD objects to embed. */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description = SITE.description,
+  image = '/og-image.jpg',
+  type = 'website',
+  noindex = false,
+  jsonLd,
+} = Astro.props;
+
+const siteUrl = Astro.site ?? new URL('https://rivare.hn');
+const canonical = new URL(Astro.url.pathname, siteUrl).href.replace(/\/$/, '') || siteUrl.href;
+const ogImage = new URL(image, siteUrl).href;
+const fullTitle = title === SITE.name ? `${SITE.name} — ${SITE.tagline}` : `${title} · ${SITE.name}`;
+
+const organizationLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Brand',
+  name: SITE.name,
+  slogan: SITE.brandLine,
+  description: SITE.description,
+  url: siteUrl.href,
+  logo: new URL('/og-image.jpg', siteUrl).href,
+  areaServed: SITE.countryName,
+};
+
+const localBusinessLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Store',
+  name: SITE.name,
+  description: SITE.description,
+  url: siteUrl.href,
+  image: ogImage,
+  telephone: SITE.whatsapp.display,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: SITE.locality,
+    addressRegion: SITE.region,
+    addressCountry: SITE.country,
+  },
+};
+
+const ldBlocks = [organizationLd, localBusinessLd, ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [])];
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:type" content={type} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:locale" content={SITE.locale} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+{ldBlocks.map((block) => (
+  <script type="application/ld+json" set:html={JSON.stringify(block)} />
+))}

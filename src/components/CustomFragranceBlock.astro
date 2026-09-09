@@ -1,0 +1,92 @@
+---
+import Icon from '@/components/Icon.astro';
+import { waLink, customFragranceText } from '@/lib/whatsapp';
+import { SITE } from '@/data/site';
+
+interface Props {
+  /** Show the little "¿qué perfume tenés en mente?" input. */
+  withInput?: boolean;
+  class?: string;
+}
+const { withInput = false, class: className } = Astro.props;
+---
+
+<section class:list={['is-dark', className]} aria-labelledby="medida-title">
+  <div class="u-shell u-section grid gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center">
+    <div>
+      <p class="eyebrow reveal">Fragancias a medida</p>
+      <h2 id="medida-title" class="reveal mt-5 font-display text-display-lg">
+        ¿Tenés una fragancia en mente? Te la hacemos.
+      </h2>
+      <p class="reveal mt-6 max-w-[46ch] text-sand/85 text-[1.05rem] leading-relaxed">
+        Decinos cuál perfume amás y lo recreamos en Eau de Parfum, con la misma
+        intensidad y duración de RIVÂRE. 50 ml.
+      </p>
+    </div>
+
+    <div class="reveal">
+      {withInput ? (
+        <form data-custom-form class="space-y-4">
+          <label class="block">
+            <span class="eyebrow">¿Qué perfume tenés en mente?</span>
+            <input
+              type="text"
+              name="reference"
+              data-custom-input
+              placeholder="Ej. Baccarat Rouge 540"
+              class="mt-3 w-full bg-transparent border border-white/25 focus:border-ivory px-4 py-3.5 text-ivory placeholder:text-sand/45 focus:outline-none transition-colors"
+            />
+          </label>
+          <a
+            data-custom-cta
+            href={waLink(customFragranceText())}
+            target="_blank"
+            rel="noopener"
+            class="btn btn--ghost w-full"
+          >
+            <Icon name="whatsapp" size={17} />
+            Solicitar por WhatsApp
+          </a>
+          <p class="text-[0.75rem] text-sand/55">{SITE.whatsapp.display} · respuesta directa por RIVÂRE.</p>
+        </form>
+      ) : (
+        <div class="border-l border-white/15 pl-6">
+          <p class="font-display italic text-[1.4rem] text-ivory/90">
+            «Escribinos y la creamos para vos.»
+          </p>
+          <a
+            href={waLink(customFragranceText())}
+            target="_blank"
+            rel="noopener"
+            class="btn btn--ghost mt-6"
+          >
+            <Icon name="whatsapp" size={17} />
+            Escribinos por WhatsApp
+          </a>
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+{withInput && (
+  <script>
+    import { waLink, customFragranceText } from '@/lib/whatsapp';
+    function initCustomForm() {
+      document.querySelectorAll<HTMLFormElement>('[data-custom-form]').forEach((form) => {
+        const input = form.querySelector<HTMLInputElement>('[data-custom-input]');
+        const cta = form.querySelector<HTMLAnchorElement>('[data-custom-cta]');
+        if (!input || !cta) return;
+        const update = () => (cta.href = waLink(customFragranceText(input.value)));
+        input.addEventListener('input', update);
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          update();
+          window.open(cta.href, '_blank', 'noopener');
+        });
+      });
+    }
+    initCustomForm();
+    document.addEventListener('astro:page-load', initCustomForm);
+  </script>
+)}

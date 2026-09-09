@@ -1,0 +1,52 @@
+---
+import { Image } from 'astro:assets';
+import AddToCart from '@/components/AddToCart.astro';
+import { formatPrice } from '@/lib/format';
+import type { Product } from '@/data/products';
+import { CATEGORY_LABEL } from '@/data/site';
+
+interface Props {
+  product: Product;
+  /** index for stagger delay */
+  index?: number;
+  loading?: 'eager' | 'lazy';
+}
+const { product, index = 0, loading = 'lazy' } = Astro.props;
+const href = `/perfume/${product.slug}`;
+const delay = Math.min(index, 5) * 70;
+---
+
+<article class="group reveal" style={`--reveal-delay:${delay}ms`}>
+  <a href={href} class="block" aria-label={`${product.name} — inspirado en ${product.inspiredBy}`}>
+    <div class="zoom-frame relative bg-ivory aspect-[3/4]">
+      <Image
+        src={product.image}
+        alt={`Frasco de ${product.name}, Eau de Parfum 50 ml de RIVÂRE`}
+        widths={[280, 360, 560, 720]}
+        sizes="(min-width:1280px) 21vw, (min-width:768px) 30vw, 45vw"
+        loading={loading}
+        class="w-full h-full object-cover"
+      />
+      <span class="absolute left-3 top-3 text-[0.65rem] uppercase tracking-[0.18em] text-taupe-deep bg-paper/85 px-2 py-1">
+        {CATEGORY_LABEL[product.category]}
+      </span>
+    </div>
+
+    <div class="pt-4">
+      <div class="flex items-baseline justify-between gap-3">
+        <h3 class="font-display text-[1.6rem] leading-none">{product.name}</h3>
+        <span class="text-meta text-taupe-deep whitespace-nowrap">{formatPrice(product.priceHnl)}</span>
+      </div>
+      <p class="mt-1.5 font-display italic text-[1.05rem] text-taupe-deep">
+        Inspirado en {product.inspiredBy}
+      </p>
+      <p class="mt-1 text-[0.72rem] uppercase tracking-[0.14em] text-taupe-deep">
+        Eau de Parfum · 50 ml
+      </p>
+    </div>
+  </a>
+
+  <div class="mt-4 lg:opacity-0 lg:translate-y-1 lg:transition lg:duration-300 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 lg:group-focus-within:opacity-100 lg:group-focus-within:translate-y-0">
+    <AddToCart slug={product.slug} variant="compact" label="Agregar a la selección" />
+  </div>
+</article>

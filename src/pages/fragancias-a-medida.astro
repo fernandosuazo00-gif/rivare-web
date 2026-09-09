@@ -1,0 +1,99 @@
+---
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+import CustomFragranceBlock from '@/components/CustomFragranceBlock.astro';
+import { SITE } from '@/data/site';
+import { waLink, customFragranceText } from '@/lib/whatsapp';
+
+const steps = [
+  {
+    n: '01',
+    t: 'Decinos cuál',
+    d: 'Escribinos por WhatsApp el nombre del perfume que tenés en mente. Puede ser de cualquier casa.',
+  },
+  {
+    n: '02',
+    t: 'Lo recreamos',
+    d: 'Lo interpretamos en Eau de Parfum con la intensidad y duración de RIVÂRE. 50 ml.',
+  },
+  {
+    n: '03',
+    t: 'Lo coordinás',
+    d: 'Confirmamos disponibilidad, tiempo y detalles de entrega directamente con vos por WhatsApp.',
+  },
+];
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '¿Qué es una fragancia a medida de RIVÂRE?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Si el perfume que buscás no está entre las 15 fragancias del catálogo, RIVÂRE lo recrea para vos en Eau de Parfum de 50 ml, con la misma intensidad y duración de la línea.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Cómo lo solicito?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `Escribí por WhatsApp al ${SITE.whatsapp.display} con el nombre del perfume que tenés en mente. RIVÂRE te confirma disponibilidad y detalles.`,
+      },
+    },
+  ],
+};
+---
+
+<Base
+  title="Fragancias a medida"
+  description="¿Tenés una fragancia en mente? RIVÂRE la recrea para vos en Eau de Parfum de 50 ml. Solicitala por WhatsApp."
+  jsonLd={faqLd}
+>
+  <section class="u-shell pt-10 pb-16 lg:pt-16">
+    <p class="eyebrow reveal">Fragancias a medida</p>
+    <h1 class="reveal mt-5 font-display text-display-xl font-light leading-[1.02] max-w-[11ch]">
+      ¿Tenés una fragancia en mente?
+    </h1>
+    <p class="reveal mt-4 font-display italic text-display-sm text-caramel-deep">
+      Te la hacemos.
+    </p>
+    <p class="reveal mt-8 max-w-[50ch] text-[1.1rem] leading-relaxed text-taupe-deep">
+      Si el aroma que amás no está entre las 15 fragancias de RIVÂRE, no te quedás sin él.
+      Decinos cuál es y lo recreamos en Eau de Parfum, 50 ml, con la intensidad y
+      duración de la casa.
+    </p>
+    <a href={waLink(customFragranceText())} target="_blank" rel="noopener" class="reveal btn btn--wa mt-9">
+      <Icon name="whatsapp" size={18} />
+      Solicitar por WhatsApp
+    </a>
+  </section>
+
+  <section class="bg-ivory u-section" aria-labelledby="pasos-title">
+    <div class="u-shell">
+      <h2 id="pasos-title" class="eyebrow reveal">Cómo funciona</h2>
+      <div class="mt-10 grid gap-px bg-sand-deep/40 md:grid-cols-3">
+        {steps.map((s) => (
+          <div class="reveal bg-ivory p-8">
+            <span class="font-display text-[2.5rem] text-caramel">{s.n}</span>
+            <h3 class="mt-3 font-display text-display-sm">{s.t}</h3>
+            <p class="mt-3 text-[0.98rem] leading-relaxed text-taupe-deep">{s.d}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CustomFragranceBlock withInput />
+
+  <section class="u-shell u-section text-center flex flex-col items-center">
+    <p class="reveal font-display text-display-md max-w-[20ch]">
+      Escribinos y la creamos para vos.
+    </p>
+    <p class="reveal mt-4 text-[0.8rem] uppercase tracking-[0.16em] text-taupe-deep">
+      {SITE.whatsapp.display} · {SITE.locality}, {SITE.countryName}
+    </p>
+  </section>
+</Base>

@@ -1,0 +1,92 @@
+---
+import { Image } from 'astro:assets';
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+import Testimonials from '@/components/Testimonials.astro';
+import { SITE } from '@/data/site';
+import lumenImg from '@/assets/lifestyle/lumen.jpg';
+import quartetImg from '@/assets/lifestyle/quartet.jpeg';
+---
+
+<Base
+  title="Nosotros"
+  description="RIVÂRE es una perfumería hecha en Honduras. No inventamos olores: partimos de los más reconocidos del mundo y los traemos a tu precio, en tu ciudad."
+>
+  <section class="u-shell pt-10 pb-16 lg:pt-16">
+    <p class="eyebrow reveal">Nosotros</p>
+    <h1 class="reveal mt-5 font-display text-display-lg font-light leading-[1.05] max-w-[15ch]">
+      Una perfumería hecha en Honduras.
+    </h1>
+  </section>
+
+  <section class="u-shell pb-section grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:items-center">
+    <div class="reveal order-2 lg:order-1">
+      <p class="font-display text-[1.7rem] leading-[1.5] text-ink">
+        No inventamos olores. Partimos de los que ya conocés, los más reconocidos del mundo,
+        y los traemos a tu precio, en tu ciudad.
+      </p>
+      <p class="mt-6 max-w-[52ch] leading-relaxed text-taupe-deep">
+        Cada RIVÂRE nace de un perfil olfativo que el mundo ya reconoce y lo interpreta en
+        Eau de Parfum de 50 ml, con una intensidad y duración pensadas para durar el día.
+        No somos una imitación ni estamos afiliados a esas casas: RIVÂRE es su propia marca,
+        formulada y ensamblada acá, en {SITE.locality}.
+      </p>
+      <p class="mt-8 eyebrow">{SITE.brandLine}</p>
+    </div>
+    <div class="reveal order-1 lg:order-2 zoom-frame aspect-[4/5] bg-ivory">
+      <Image
+        src={lumenImg}
+        alt="Fragancia Lumen de RIVÂRE junto a su estuche"
+        widths={[420, 640, 900]}
+        sizes="(min-width:1024px) 40vw, 92vw"
+        loading="eager"
+        class="w-full h-full object-cover"
+      />
+    </div>
+  </section>
+
+  <section class="is-dark">
+    <div class="u-shell u-section grid gap-10 md:grid-cols-3">
+      <div class="reveal">
+        <p class="font-display text-display-sm">15 fragancias</p>
+        <p class="mt-2 text-sand/80 text-meta">Toda la línea en Eau de Parfum, 50 ml.</p>
+      </div>
+      <div class="reveal">
+        <p class="font-display text-display-sm">A tu precio</p>
+        <p class="mt-2 text-sand/80 text-meta">Acceso a grandes perfiles olfativos sin el precio de la casa original.</p>
+      </div>
+      <div class="reveal">
+        <p class="font-display text-display-sm">En tu ciudad</p>
+        <p class="mt-2 text-sand/80 text-meta">Hecho en {SITE.locality}, {SITE.countryName}. Pedidos y consultas por WhatsApp.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="u-shell u-section grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+    <div class="reveal zoom-frame aspect-[4/5] bg-ivory">
+      <Image
+        src={quartetImg}
+        alt="Cuatro fragancias RIVÂRE alineadas"
+        widths={[420, 640, 900]}
+        sizes="(min-width:1024px) 40vw, 92vw"
+        loading="lazy"
+        class="w-full h-full object-cover"
+      />
+    </div>
+    <div class="reveal">
+      <h2 class="font-display text-display-md max-w-[16ch]">Fragancias · inspiradas en los grandes · creadas para quedarse.</h2>
+      <p class="mt-6 max-w-[46ch] leading-relaxed text-taupe-deep">
+        Si la fragancia que buscás no está en el catálogo, RIVÂRE la recrea a tu medida.
+        Es parte de lo que hacemos.
+      </p>
+      <a href="/fragancias-a-medida" class="mt-7 inline-flex items-center gap-2 text-meta uppercase tracking-[0.16em]">
+        <span class="link-underline">Fragancias a medida</span>
+        <Icon name="arrow-right" size={15} />
+      </a>
+    </div>
+  </section>
+
+  <div class="bg-ivory">
+    <Testimonials />
+  </div>
+</Base>

@@ -1,0 +1,184 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { Image } from 'astro:assets';
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+import AddToCart from '@/components/AddToCart.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import { products, productBySlug, SIZE_LABEL, NOTES_DISCLAIMER } from '@/data/products';
+import { CATEGORY_LABEL, SITE } from '@/data/site';
+import { formatPrice, PRICE_PENDING_NOTE } from '@/lib/format';
+import { waLink, productOrderText } from '@/lib/whatsapp';
+
+export const getStaticPaths = (() =>
+  products.map((p) => ({ params: { slug: p.slug }, props: { slug: p.slug } }))) satisfies GetStaticPaths;
+
+const { slug } = Astro.props;
+const product = productBySlug(slug)!;
+
+const related = products
+  .filter((p) => p.slug !== product.slug && p.category === product.category)
+  .concat(products.filter((p) => p.slug !== product.slug && p.category !== product.category))
+  .slice(0, 4);
+
+const tiers: { label: string; items: string[] }[] = [
+  { label: 'Salida', items: product.notes.top },
+  { label: 'Corazón', items: product.notes.heart },
+  { label: 'Fondo', items: product.notes.base },
+];
+
+const productLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: `${SITE.name} ${product.name}`,
+  category: 'Eau de Parfum',
+  description: `${product.name} de RIVÂRE — inspirado en ${product.inspiredBy}. ${product.character}`,
+  brand: { '@type': 'Brand', name: SITE.name },
+  image: new URL(product.image.src, Astro.site).href,
+  size: '50 ml',
+  ...(product.priceHnl != null
+    ? {
+        offers: {
+          '@type': 'Offer',
+          price: product.priceHnl,
+          priceCurrency: SITE.currency,
+          availability: 'https://schema.org/InStock',
+          url: Astro.url.href,
+        },
+      }
+    : {}),
+};
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Perfumes', item: new URL('/perfumes', Astro.site).href },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: CATEGORY_LABEL[product.category],
+      item: new URL(`/perfumes/${product.category}`, Astro.site).href,
+    },
+    { '@type': 'ListItem', position: 3, name: product.name, item: Astro.url.href },
+  ],
+};
+---
+
+<Base
+  title={`${product.name} — inspirado en ${product.inspiredBy}`}
+  description={`${product.name}: Eau de Parfum 50 ml de RIVÂRE, inspirado en ${product.inspiredBy} (${product.house}). ${product.character}`}
+  type="product"
+  jsonLd={[productLd, breadcrumbLd]}
+>
+  <article class="u-shell pt-6 pb-section">
+    <nav class="text-[0.72rem] uppercase tracking-[0.16em] text-taupe-deep" aria-label="Ruta">
+      <a href="/perfumes" class="hover:text-ink transition-colors">Perfumes</a>
+      <span class="mx-2">/</span>
+      <a href={`/perfumes/${product.category}`} class="hover:text-ink transition-colors">{CATEGORY_LABEL[product.category]}</a>
+      <span class="mx-2">/</span>
+      <span class="text-ink">{product.name}</span>
+    </nav>
+
+    <div class="mt-6 grid gap-10 lg:grid-cols-2 lg:gap-16">
+      <!-- Image -->
+      <div class="lg:sticky lg:top-24 lg:self-start">
+        <div class="zoom-frame bg-ivory aspect-[3/4]">
+          <Image
+            src={product.image}
+            alt={`Frasco de ${product.name}, Eau de Parfum 50 ml de RIVÂRE, inspirado en ${product.inspiredBy}`}
+            widths={[480, 720, 960, 1200]}
+            sizes="(min-width:1024px) 46vw, 92vw"
+            loading="eager"
+            fetchpriority="high"
+            class="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div class="lg:py-4">
+        <p class="eyebrow">{CATEGORY_LABEL[product.category]}</p>
+        <h1 class="mt-3 font-display text-display-lg leading-none">{product.name}</h1>
+        <p class="mt-3 font-display italic text-[1.35rem] text-taupe-deep">
+          Inspirado en {product.inspiredBy}
+          <span class="not-italic text-[0.8rem] uppercase tracking-[0.14em] ml-2 align-middle">· {product.house}</span>
+        </p>
+        <p class="mt-4 text-[0.78rem] uppercase tracking-[0.16em] text-taupe-deep">{SIZE_LABEL}</p>
+
+        <p class="mt-7 text-[1.1rem] leading-relaxed max-w-[44ch]">{product.character}</p>
+
+        <div class="mt-8 flex items-baseline gap-3">
+          <span class="font-display text-[1.9rem]">{formatPrice(product.priceHnl)}</span>
+          {product.priceHnl == null && (
+            <span class="text-meta text-taupe-deep">{PRICE_PENDING_NOTE}</span>
+          )}
+        </div>
+
+        <div class="mt-6 space-y-3">
+          <AddToCart slug={product.slug} variant="full" label="Agregar a la selección" />
+          <a
+            href={waLink(productOrderText(product))}
+            target="_blank"
+            rel="noopener"
+            class="btn btn--wa w-full sm:w-auto sm:min-w-[280px]"
+          >
+            <Icon name="whatsapp" size={18} />
+            Ordenar por WhatsApp
+          </a>
+          <p class="text-[0.75rem] leading-relaxed text-taupe-deep max-w-[44ch]">
+            El pedido se coordina y confirma por WhatsApp con RIVÂRE. No se procesan pagos en línea.
+          </p>
+        </div>
+
+        <hr class="rule my-10" />
+
+        <dl class="grid grid-cols-2 gap-y-6 gap-x-4 text-meta">
+          <div>
+            <dt class="eyebrow">Familia olfativa</dt>
+            <dd class="mt-2 text-ink">{product.family}</dd>
+          </div>
+          <div>
+            <dt class="eyebrow">Uso sugerido</dt>
+            <dd class="mt-2 text-ink">{product.use}</dd>
+          </div>
+          <div>
+            <dt class="eyebrow">Concentración</dt>
+            <dd class="mt-2 text-ink">Eau de Parfum</dd>
+          </div>
+          <div>
+            <dt class="eyebrow">Contenido</dt>
+            <dd class="mt-2 text-ink">50 ml · 1.7 fl oz</dd>
+          </div>
+        </dl>
+
+        <div class="mt-10">
+          <p class="eyebrow">Notas de la fragancia que la inspira</p>
+          <div class="mt-5 space-y-4">
+            {tiers.map((tier) => (
+              <div class="grid grid-cols-[80px_1fr] gap-4 items-baseline border-b border-sand pb-4">
+                <span class="text-[0.72rem] uppercase tracking-[0.14em] text-taupe-deep">{tier.label}</span>
+                <span class="font-display text-[1.15rem] text-ink">{tier.items.join(' · ')}</span>
+              </div>
+            ))}
+          </div>
+          <p class="mt-4 text-[0.75rem] leading-relaxed text-taupe-deep max-w-[52ch]">{NOTES_DISCLAIMER}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <section class="mt-24" aria-labelledby="rel-title">
+      <div class="flex items-end justify-between gap-4 border-t border-sand pt-10">
+        <h2 id="rel-title" class="font-display text-display-sm">También te puede gustar</h2>
+        <a href="/perfumes" class="inline-flex items-center gap-2 text-meta uppercase tracking-[0.16em] shrink-0">
+          <span class="link-underline">Ver todas</span>
+          <Icon name="arrow-right" size={15} />
+        </a>
+      </div>
+      <div class="mt-10 grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-4 md:gap-x-6">
+        {related.map((p, i) => <ProductCard product={p} index={i} />)}
+      </div>
+    </section>
+  </article>
+</Base>

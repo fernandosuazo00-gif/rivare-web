@@ -1,0 +1,233 @@
+---
+import { Image } from 'astro:assets';
+import Icon from '@/components/Icon.astro';
+import { NAV, COLLECTION_NAV, SITE } from '@/data/site';
+import { waLink, GENERIC_WA_TEXT } from '@/lib/whatsapp';
+import wordmarkInk from '@/assets/brand/wordmark-ink.png';
+import wordmarkCream from '@/assets/brand/wordmark-cream.png';
+
+interface Props {
+  overlay?: boolean;
+}
+const { overlay = false } = Astro.props;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header
+  id="site-header"
+  data-overlay={overlay ? '' : undefined}
+  class:list={[
+    'fixed inset-x-0 top-0 z-header transition-[background-color,border-color,color] duration-300',
+    overlay
+      ? 'text-ivory bg-transparent border-b border-transparent [&.is-scrolled]:bg-espresso [&.is-scrolled]:border-white/10'
+      : 'text-ink bg-paper/95 supports-[backdrop-filter]:bg-paper/80 backdrop-blur-sm border-b border-sand',
+  ]}
+>
+  <div class="u-shell flex items-center justify-between gap-4 h-16 lg:h-20">
+    <!-- Wordmark -->
+    <a href="/" class="shrink-0 py-2" aria-label={`${SITE.name} — inicio`}>
+      <Image
+        src={wordmarkInk}
+        alt=""
+        widths={[80, 160]}
+        sizes="80px"
+        class:list={['h-[19px] w-auto lg:h-[22px]', overlay ? 'hidden [.is-scrolled_&]:hidden' : 'block']}
+        loading="eager"
+      />
+      <Image
+        src={wordmarkCream}
+        alt=""
+        widths={[80, 160]}
+        sizes="80px"
+        class:list={[
+          'h-[19px] w-auto lg:h-[22px]',
+          overlay ? 'block [.is-scrolled_&]:block' : 'hidden',
+        ]}
+        loading="eager"
+      />
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="hidden lg:flex items-center gap-9 text-meta uppercase tracking-[0.16em]" aria-label="Principal">
+      <div class="relative group">
+        <a
+          href="/perfumes"
+          class="inline-flex items-center gap-1.5 py-6"
+          aria-current={isActive('/perfumes') ? 'page' : undefined}
+        >
+          <span class="link-underline">Perfumes</span>
+          <Icon name="arrow-down" size={12} class="opacity-60 transition-transform duration-200 group-hover:rotate-180" />
+        </a>
+        <div
+          class="absolute left-0 top-full min-w-[220px] bg-paper text-ink border border-sand p-2 opacity-0 invisible translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0"
+        >
+          {COLLECTION_NAV.map((c) => (
+            <a href={c.href} class="block px-3 py-2.5 text-meta uppercase tracking-[0.14em] hover:bg-ivory transition-colors">
+              {c.label}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {NAV.filter((n) => n.href !== '/' && n.href !== '/perfumes').map((n) => (
+        <a href={n.href} class="py-6" aria-current={isActive(n.href) ? 'page' : undefined}>
+          <span class="link-underline">{n.label}</span>
+        </a>
+      ))}
+    </nav>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-1 sm:gap-3">
+      <a
+        href={waLink(GENERIC_WA_TEXT)}
+        target="_blank"
+        rel="noopener"
+        class="hidden lg:inline-flex items-center gap-2 text-meta uppercase tracking-[0.14em] px-3 py-2 hover:text-caramel-deep transition-colors [.is-scrolled_&]:hover:text-caramel"
+      >
+        <Icon name="whatsapp" size={16} />
+        <span>WhatsApp</span>
+      </a>
+
+      <button
+        type="button"
+        data-cart-open
+        class="relative inline-flex items-center justify-center w-11 h-11 -mr-1 hover:text-caramel-deep transition-colors [[data-overlay]_&]:hover:text-caramel"
+        aria-label="Abrir carrito"
+      >
+        <Icon name="cart" size={22} />
+        <span
+          data-cart-count
+          hidden
+          class="absolute top-1 right-0 min-w-[16px] h-4 px-1 grid place-items-center bg-caramel-deep text-paper text-[10px] font-medium rounded-full tabular-nums [[data-overlay]_&]:bg-caramel [[data-overlay]_&]:text-espresso"
+        >0</span>
+      </button>
+
+      <button
+        type="button"
+        data-menu-open
+        class="lg:hidden inline-flex items-center justify-center w-11 h-11"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+      >
+        <Icon name="menu" size={22} />
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile nav panel -->
+<div
+  id="mobile-nav"
+  hidden
+  class="fixed inset-0 z-mobile-nav lg:hidden is-dark flex flex-col"
+>
+  <div class="u-shell flex items-center justify-between h-16 border-b border-white/10">
+    <Image src={wordmarkCream} alt={SITE.name} widths={[80, 160]} sizes="80px" class="h-[19px] w-auto" />
+    <button type="button" data-menu-close class="inline-flex items-center justify-center w-11 h-11 -mr-1" aria-label="Cerrar menú">
+      <Icon name="close" size={22} />
+    </button>
+  </div>
+
+  <nav class="u-shell flex-1 overflow-y-auto py-8 flex flex-col" aria-label="Móvil">
+    <p class="eyebrow mb-4">Perfumes</p>
+    <div class="flex flex-col">
+      {COLLECTION_NAV.map((c) => (
+        <a href={c.href} class="py-3 font-display text-display-sm border-b border-white/10">{c.label}</a>
+      ))}
+    </div>
+
+    <div class="flex flex-col mt-8">
+      {NAV.filter((n) => n.href !== '/perfumes').map((n) => (
+        <a href={n.href} class="py-3 font-display text-display-sm border-b border-white/10">{n.label}</a>
+      ))}
+    </div>
+
+    <a
+      href={waLink(GENERIC_WA_TEXT)}
+      target="_blank"
+      rel="noopener"
+      class="btn btn--wa mt-10 w-full"
+    >
+      <Icon name="whatsapp" size={18} />
+      Escribinos por WhatsApp
+    </a>
+    <p class="text-meta text-sand/70 mt-4">{SITE.whatsapp.display} · {SITE.locality}, {SITE.countryName}</p>
+  </nav>
+</div>
+
+<!-- Spacer so non-overlay pages don't hide under the fixed header -->
+{!overlay && <div class="h-16 lg:h-20" aria-hidden="true"></div>}
+
+<script>
+  import { onCartChange, cartCount, readCart } from '@/lib/cart';
+
+  const menuClose = () => {
+    const panel = document.getElementById('mobile-nav');
+    if (!panel || panel.hidden) return;
+    panel.hidden = true;
+    document.documentElement.classList.remove('no-scroll');
+    document.querySelector('[data-menu-open]')?.setAttribute('aria-expanded', 'false');
+    (document.querySelector('[data-menu-open]') as HTMLElement | null)?.focus();
+  };
+  const menuOpen = () => {
+    const panel = document.getElementById('mobile-nav');
+    if (!panel) return;
+    panel.hidden = false;
+    document.documentElement.classList.add('no-scroll');
+    document.querySelector('[data-menu-open]')?.setAttribute('aria-expanded', 'true');
+    panel.querySelector<HTMLElement>('a, button')?.focus();
+  };
+
+  function paintCount() {
+    const n = cartCount(readCart());
+    document.querySelectorAll<HTMLElement>('[data-cart-count]').forEach((el) => {
+      el.textContent = String(n);
+      el.hidden = n === 0;
+    });
+    document.querySelectorAll<HTMLElement>('[data-cart-open]').forEach((el) => {
+      el.setAttribute('aria-label', n === 0 ? 'Abrir carrito' : `Abrir carrito, ${n} artículo${n === 1 ? '' : 's'}`);
+    });
+  }
+
+  function syncHeaderScroll() {
+    const header = document.getElementById('site-header');
+    if (header?.hasAttribute('data-overlay')) {
+      header.classList.toggle('is-scrolled', window.scrollY > 12);
+    }
+  }
+
+  if (!(window as any).__rivareHeader) {
+    (window as any).__rivareHeader = true;
+
+    window.addEventListener('scroll', syncHeaderScroll, { passive: true });
+
+    document.addEventListener('click', (e) => {
+      const el = e.target as HTMLElement;
+      if (el.closest('[data-cart-open]')) {
+        window.dispatchEvent(new CustomEvent('rivare:cart-open'));
+      } else if (el.closest('[data-menu-open]')) {
+        menuOpen();
+      } else if (el.closest('[data-menu-close]')) {
+        menuClose();
+      } else if (el.closest('#mobile-nav a')) {
+        menuClose();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') menuClose();
+    });
+
+    onCartChange(paintCount);
+  }
+
+  const boot = () => {
+    menuClose();
+    syncHeaderScroll();
+    paintCount();
+  };
+  boot();
+  document.addEventListener('astro:page-load', boot);
+</script>

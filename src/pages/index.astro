@@ -1,0 +1,205 @@
+---
+import { Image } from 'astro:assets';
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+import CategoryTabs from '@/components/CategoryTabs.astro';
+import ProductGrid from '@/components/ProductGrid.astro';
+import Testimonials from '@/components/Testimonials.astro';
+import CustomFragranceBlock from '@/components/CustomFragranceBlock.astro';
+import { products, productBySlug } from '@/data/products';
+import { SITE } from '@/data/site';
+import { waLink, customFragranceText } from '@/lib/whatsapp';
+import heroImg from '@/assets/lifestyle/group.jpg';
+import quartetImg from '@/assets/lifestyle/quartet.jpeg';
+
+const featuredSlugs = ['amber', 'azure', 'rose', 'terra', 'bloom', 'royale', 'ombre', 'diva'];
+const featured = featuredSlugs.map((s) => productBySlug(s)!).filter(Boolean);
+
+const inspirations = [...new Set(products.map((p) => p.inspiredBy))];
+const inspoRow = [...inspirations, ...inspirations];
+---
+
+<Base
+  title={SITE.name}
+  description={SITE.description}
+  headerOverlay
+>
+  <!-- 01 — HERO ------------------------------------------------------------ -->
+  <section class="is-dark relative overflow-hidden">
+    <div class="u-shell grid lg:grid-cols-[1.1fr_0.9fr] lg:items-center gap-10 lg:gap-16 pt-28 pb-20 lg:pt-36 lg:pb-28 lg:min-h-[88svh]">
+      <div>
+        <p class="eyebrow reveal">Eau de Parfum · Hecho en Honduras</p>
+        <h1 class="reveal mt-6 font-display font-light text-display-xl max-w-[12ch]">
+          Los aromas que ya conocés.
+        </h1>
+        <p class="reveal mt-4 font-display italic text-display-sm text-caramel">
+          Ahora, más cerca.
+        </p>
+        <p class="reveal mt-7 max-w-[40ch] text-sand/85 text-[1.05rem] leading-relaxed">
+          Fragancias inspiradas en los grandes, creadas para quedarse.
+          A tu precio, en tu ciudad.
+        </p>
+        <div class="reveal mt-9 flex flex-col sm:flex-row gap-3">
+          <a href="/perfumes" class="btn btn--ghost">
+            Descubrir fragancias
+            <Icon name="arrow-right" size={16} />
+          </a>
+          <a href={waLink(customFragranceText())} target="_blank" rel="noopener" class="btn btn--ghost">
+            <Icon name="whatsapp" size={16} />
+            Pedí tu fragancia
+          </a>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div class="zoom-frame aspect-[3/4] bg-espresso-soft" data-parallax>
+          <Image
+            src={heroImg}
+            alt="Fragancias RIVÂRE junto a sus estuches, Eau de Parfum hecho en Honduras"
+            widths={[520, 760, 1040]}
+            sizes="(min-width:1024px) 44vw, 90vw"
+            loading="eager"
+            fetchpriority="high"
+            class="w-full h-full object-cover will-change-transform"
+          />
+        </div>
+        <p class="mt-3 text-[0.7rem] uppercase tracking-[0.18em] text-sand/55">
+          Colección RIVÂRE · 15 fragancias · 50 ml
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 — BRAND STATEMENT ---------------------------------------------------- -->
+  <section class="u-section" aria-labelledby="marca-title">
+    <div class="u-shell grid gap-10 lg:grid-cols-[1fr_1fr] lg:gap-16">
+      <h2 id="marca-title" class="reveal font-display text-display-lg leading-[1.02]">
+        Una perfumería hecha en Honduras.
+      </h2>
+      <div class="reveal self-end">
+        <p class="font-display text-[1.6rem] leading-[1.5] text-taupe-deep max-w-[32ch]">
+          No inventamos olores. Partimos de los que ya conocés, los más reconocidos
+          del mundo, y los traemos a tu precio, en tu ciudad.
+        </p>
+        <a href="/nosotros" class="mt-6 inline-flex items-center gap-2 text-meta uppercase tracking-[0.16em]">
+          <span class="link-underline">Conocé la marca</span>
+          <Icon name="arrow-right" size={15} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 — DISCOVER THE COLLECTION ----------------------------------------- -->
+  <section class="bg-ivory u-section" aria-labelledby="coleccion-title">
+    <div class="u-shell">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p class="eyebrow reveal">La colección</p>
+          <h2 id="coleccion-title" class="reveal mt-4 font-display text-display-md">
+            Quince fragancias. Una firma para cada quien.
+          </h2>
+        </div>
+        <a href="/perfumes" class="reveal inline-flex items-center gap-2 text-meta uppercase tracking-[0.16em]">
+          <span class="link-underline">Ver todas</span>
+          <Icon name="arrow-right" size={15} />
+        </a>
+      </div>
+
+      <CategoryTabs active="all" class="reveal mt-8 border-t border-sand-deep/40 pt-5" />
+
+      <ProductGrid products={featured} eager={2} class="mt-12" />
+
+      <div class="mt-14 flex justify-center">
+        <a href="/perfumes" class="btn btn--ghost">Ver todas las fragancias</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 — INSPIRED BY ICONS --------------------------------------------------- -->
+  <section class="u-section overflow-hidden" aria-labelledby="inspirado-title">
+    <div class="u-shell grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+      <div class="reveal zoom-frame aspect-[4/5] bg-ivory order-2 lg:order-1">
+        <Image
+          src={quartetImg}
+          alt="Cuatro fragancias RIVÂRE alineadas sobre fondo claro"
+          widths={[420, 640, 900]}
+          sizes="(min-width:1024px) 40vw, 90vw"
+          loading="lazy"
+          class="w-full h-full object-cover"
+        />
+      </div>
+      <div class="order-1 lg:order-2">
+        <p class="eyebrow reveal">Inspiradas en íconos</p>
+        <h2 id="inspirado-title" class="reveal mt-5 font-display text-display-md max-w-[18ch]">
+          Reconocés el aroma. La marca es nuestra.
+        </h2>
+        <p class="reveal mt-6 max-w-[46ch] text-[1.05rem] leading-relaxed text-taupe-deep">
+          Cada RIVÂRE parte de un perfil olfativo reconocido en el mundo y lo interpreta
+          en Eau de Parfum, 50 ml. No somos una copia ni estamos afiliados a esas casas:
+          RIVÂRE es su propia marca, hecha en Honduras.
+        </p>
+      </div>
+    </div>
+
+    <div class="marquee-mask mt-14" aria-hidden="true">
+      <div class="marquee-track items-center gap-8 text-taupe-deep">
+        {inspoRow.map((name) => (
+          <span class="shrink-0 font-display italic text-[1.5rem] whitespace-nowrap">
+            {name}<span class="not-italic text-caramel ml-8">·</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 — SOCIAL PROOF --------------------------------------------------------- -->
+  <div class="bg-ivory">
+    <Testimonials />
+  </div>
+
+  <!-- 06 — FRAGANCIAS A MEDIDA ------------------------------------------------- -->
+  <CustomFragranceBlock />
+
+  <!-- 07 — FINAL CTA --------------------------------------------------------- -->
+  <section class="u-section" aria-labelledby="cta-title">
+    <div class="u-shell text-center flex flex-col items-center">
+      <p class="eyebrow reveal">RIVÂRE</p>
+      <h2 id="cta-title" class="reveal mt-5 font-display text-display-lg max-w-[14ch]">
+        Tu próximo aroma puede estar acá.
+      </h2>
+      <div class="reveal mt-9 flex flex-col sm:flex-row gap-3">
+        <a href="/perfumes" class="btn">Descubrir fragancias</a>
+        <a href={waLink('Hola RIVÂRE 👋 Quisiera más información sobre sus fragancias.')} target="_blank" rel="noopener" class="btn btn--ghost">
+          <Icon name="whatsapp" size={16} />
+          Hablar por WhatsApp
+        </a>
+      </div>
+      <p class="reveal mt-8 text-[0.75rem] uppercase tracking-[0.16em] text-taupe-deep">
+        {SITE.brandLine}
+      </p>
+    </div>
+  </section>
+
+  <script>
+    // Featherweight hero parallax — transform only, throttled, opt-out on reduced motion.
+    function initParallax() {
+      const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const el = document.querySelector<HTMLElement>('[data-parallax] img');
+      if (!el || media.matches || window.innerWidth < 1024) return;
+      let ticking = false;
+      const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const shift = Math.max(-36, Math.min(0, -window.scrollY * 0.04));
+          el.style.transform = `translate3d(0, ${shift}px, 0) scale(1.06)`;
+          ticking = false;
+        });
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    }
+    initParallax();
+    document.addEventListener('astro:page-load', initParallax);
+  </script>
+</Base>

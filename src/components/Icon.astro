@@ -1,0 +1,40 @@
+---
+/**
+ * Minimal line-icon set (no emoji, single 24x24 viewBox, currentColor).
+ */
+interface Props {
+  name: 'cart' | 'menu' | 'close' | 'arrow-right' | 'arrow-down' | 'plus' | 'minus' | 'whatsapp' | 'instagram';
+  class?: string;
+  size?: number;
+}
+const { name, class: className, size = 24 } = Astro.props;
+
+const paths: Record<Props['name'], string> = {
+  cart: '<path d="M3 5h2l2.4 11.2a1.5 1.5 0 0 0 1.47 1.18h8.63a1.5 1.5 0 0 0 1.47-1.18L22 8H6" fill="none"/><circle cx="9.5" cy="20.5" r="1.3"/><circle cx="17.5" cy="20.5" r="1.3"/>',
+  menu: '<path d="M3 6h18M3 12h18M3 18h18"/>',
+  close: '<path d="M5 5l14 14M19 5L5 19"/>',
+  'arrow-right': '<path d="M4 12h15m0 0-6-6m6 6-6 6"/>',
+  'arrow-down': '<path d="M12 4v15m0 0 6-6m-6 6-6-6"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  minus: '<path d="M5 12h14"/>',
+  whatsapp:
+    '<path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.97L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm5.8 14.06c-.25.69-1.44 1.32-1.98 1.36-.53.05-1.03.24-3.47-.72-2.93-1.15-4.8-4.15-4.95-4.34-.14-.2-1.19-1.58-1.19-3.02s.76-2.14 1.03-2.44c.27-.3.59-.37.79-.37.2 0 .39 0 .56.01.18.01.42-.07.66.5.25.59.84 2.04.91 2.19.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.39-.44.52-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.47.12.64-.07.17-.2.74-.86.94-1.16.2-.3.39-.25.66-.15.27.1 1.71.81 2 .96.3.15.49.22.56.35.07.12.07.72-.18 1.41Z" fill="currentColor" stroke="none"/>',
+  instagram:
+    '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/>',
+};
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.4"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+  class={className}
+  set:html={paths[name]}
+/>

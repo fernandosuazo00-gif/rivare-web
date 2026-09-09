@@ -1,0 +1,33 @@
+---
+import Base from '@/layouts/Base.astro';
+import CollectionView from '@/components/CollectionView.astro';
+import { products } from '@/data/products';
+import { SITE } from '@/data/site';
+
+const itemListLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Perfumes RIVÂRE',
+  numberOfItems: products.length,
+  itemListElement: products.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    url: new URL(`/perfume/${p.slug}`, Astro.site).href,
+    name: `${p.name} — inspirado en ${p.inspiredBy}`,
+  })),
+};
+---
+
+<Base
+  title="Perfumes"
+  description="Las 15 fragancias RIVÂRE en Eau de Parfum, 50 ml. Perfumes inspirados en los grandes, hechos en Honduras — para hombre, para mujer y unisex."
+  jsonLd={itemListLd}
+>
+  <CollectionView
+    active="all"
+    eyebrow="Ver todos · 15 fragancias"
+    title="Toda la colección"
+    intro="Quince Eau de Parfum de 50 ml, cada uno inspirado en un aroma reconocido en el mundo e interpretado por RIVÂRE. Filtrá por para hombre, para mujer o unisex."
+    products={products}
+  />
+</Base>

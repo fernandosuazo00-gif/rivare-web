@@ -1,0 +1,40 @@
+---
+import Icon from '@/components/Icon.astro';
+import CategoryTabs from '@/components/CategoryTabs.astro';
+import ProductGrid from '@/components/ProductGrid.astro';
+import type { Product } from '@/data/products';
+import { waLink, customFragranceText } from '@/lib/whatsapp';
+
+interface Props {
+  active: 'all' | 'para-hombre' | 'para-mujer' | 'unisex';
+  eyebrow: string;
+  title: string;
+  intro: string;
+  products: Product[];
+}
+const { active, eyebrow, title, intro, products } = Astro.props;
+---
+
+<section class="u-shell u-section">
+  <header class="max-w-[46ch]">
+    <p class="eyebrow reveal">{eyebrow}</p>
+    <h1 class="reveal mt-5 font-display text-display-lg">{title}</h1>
+    <p class="reveal mt-6 text-[1.05rem] leading-relaxed text-taupe-deep">{intro}</p>
+  </header>
+
+  <div class="reveal mt-10 border-y border-sand py-4 sticky top-16 lg:top-20 z-30 bg-paper/95 supports-[backdrop-filter]:bg-paper/80 backdrop-blur-sm -mx-gutter px-gutter">
+    <CategoryTabs active={active} />
+  </div>
+
+  <ProductGrid products={products} eager={4} class="mt-12" />
+
+  <div class="mt-20 border-t border-sand pt-10 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+    <p class="font-display italic text-[1.5rem] text-taupe-deep max-w-[30ch]">
+      ¿No está la que buscás? La creamos a tu medida.
+    </p>
+    <a href="/fragancias-a-medida" class="btn btn--ghost shrink-0">
+      Fragancias a medida
+      <Icon name="arrow-right" size={15} />
+    </a>
+  </div>
+</section>

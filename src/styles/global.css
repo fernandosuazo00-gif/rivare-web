@@ -1,0 +1,310 @@
+/* Self-hosted variable fonts (Spanish diacritics, no third-party request). Must precede @tailwind. */
+@import '@fontsource-variable/fraunces/full.css';
+@import '@fontsource-variable/fraunces/full-italic.css';
+@import '@fontsource-variable/jost/wght.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --paper: #fbf8f2;
+    --ivory: #f1e9db;
+    --sand: #e6dbc8;
+    --espresso: #2a2018;
+    --ink: #1e1712;
+    --taupe-deep: #6e6051;
+    --caramel: #b98b4e;
+    --caramel-deep: #8a5e2a;
+    --focus: #8a5e2a;
+
+    color-scheme: light;
+  }
+
+  * {
+    min-width: 0;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scrollbar-gutter: stable;
+    overflow-x: clip;
+    scroll-padding-top: 6rem;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: theme('fontFamily.sans');
+    font-size: 1rem;
+    line-height: 1.7;
+    font-feature-settings: 'kern';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  .font-display,
+  h1, h2, h3, h4 {
+    font-family: theme('fontFamily.display');
+    font-weight: 400;
+    font-optical-sizing: auto;
+    font-variation-settings: 'SOFT' 36, 'WONK' 0;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+  }
+
+  /* Large editorial display: lighter, softer, tighter */
+  .text-display-xl,
+  .text-display-lg {
+    font-weight: 340;
+    font-variation-settings: 'SOFT' 48, 'WONK' 0;
+    letter-spacing: -0.018em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 1px;
+  }
+
+  ::selection {
+    background: var(--caramel);
+    color: var(--paper);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .u-shell {
+    width: 100%;
+    max-width: theme('maxWidth.shell');
+    margin-inline: auto;
+    padding-inline: theme('spacing.gutter');
+  }
+
+  .u-section {
+    padding-block: theme('spacing.section');
+  }
+
+  .eyebrow {
+    font-family: theme('fontFamily.sans');
+    font-size: 0.75rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--caramel-deep);
+  }
+
+  /* Dark "espresso" sections flip the eyebrow + text colours */
+  .is-dark {
+    background-color: var(--espresso);
+    color: var(--ivory);
+  }
+  .is-dark .eyebrow {
+    color: var(--caramel);
+  }
+  .is-dark ::selection {
+    background: var(--caramel);
+    color: var(--espresso);
+  }
+
+  /* Buttons ------------------------------------------------------ */
+  .btn {
+    --btn-bg: var(--espresso);
+    --btn-fg: var(--ivory);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+    min-height: 48px;
+    padding: 0.85rem 1.6rem;
+    border: 1px solid var(--btn-bg);
+    border-radius: 2px;
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    font-family: theme('fontFamily.sans');
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      background-color 200ms theme('transitionTimingFunction.editorial'),
+      color 200ms theme('transitionTimingFunction.editorial'),
+      border-color 200ms theme('transitionTimingFunction.editorial');
+  }
+  .btn:hover {
+    --btn-bg: var(--caramel-deep);
+  }
+  .btn--ghost {
+    --btn-bg: transparent;
+    --btn-fg: var(--ink);
+    border-color: currentColor;
+  }
+  .btn--ghost:hover {
+    --btn-bg: var(--espresso);
+    --btn-fg: var(--ivory);
+    border-color: var(--espresso);
+  }
+  .is-dark .btn--ghost {
+    --btn-fg: var(--ivory);
+  }
+  .is-dark .btn--ghost:hover {
+    --btn-bg: var(--ivory);
+    --btn-fg: var(--espresso);
+    border-color: var(--ivory);
+  }
+  .btn--wa {
+    --btn-bg: #1d7d63;
+  }
+  .btn--wa:hover {
+    --btn-bg: #16624e;
+  }
+
+  /* Text link with caramel underline wipe ----------------------- */
+  .link-underline {
+    background-image: linear-gradient(var(--caramel), var(--caramel));
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    padding-bottom: 1px;
+    transition: background-size 260ms theme('transitionTimingFunction.editorial');
+  }
+  .link-underline:hover,
+  a:hover > .link-underline {
+    background-size: 100% 1px;
+  }
+
+  .rule {
+    height: 1px;
+    background: var(--sand);
+    border: 0;
+  }
+  .is-dark .rule {
+    background: rgba(241, 233, 219, 0.16);
+  }
+}
+
+@layer utilities {
+  /* Scroll reveal — set by IntersectionObserver in Base layout */
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 640ms theme('transitionTimingFunction.editorial'),
+      transform 640ms theme('transitionTimingFunction.editorial');
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* Image hover zoom container */
+  .zoom-frame {
+    overflow: hidden;
+  }
+  .zoom-frame img {
+    transition: transform 600ms theme('transitionTimingFunction.editorial');
+  }
+  .zoom-frame:hover img,
+  a:hover .zoom-frame img,
+  .group:hover .zoom-frame img {
+    transform: scale(1.045);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .zoom-frame img {
+      transition: none;
+    }
+    .zoom-frame:hover img,
+    a:hover .zoom-frame img,
+    .group:hover .zoom-frame img {
+      transform: none;
+    }
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 42s linear infinite;
+  }
+  .marquee-mask {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+      flex-wrap: wrap;
+      width: 100%;
+      justify-content: center;
+    }
+    .marquee-mask {
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+  }
+
+  .no-scroll {
+    overflow: hidden !important;
+  }
+}

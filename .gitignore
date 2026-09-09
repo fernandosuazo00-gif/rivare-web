@@ -1,0 +1,21 @@
+# build output
+dist/
+.output/
+.vercel/
+.netlify/
+
+# dependencies
+node_modules/
+
+# astro
+.astro/
+
+# env
+.env
+.env.production
+.env.*.local
+
+# system
+.DS_Store
+*.log
+npm-debug.log*

@@ -1,0 +1,103 @@
+---
+import Icon from '@/components/Icon.astro';
+
+interface Props {
+  slug: string;
+  /** 'full' = primary button with qty stepper (product page); 'compact' = single button (cards) */
+  variant?: 'full' | 'compact';
+  label?: string;
+  class?: string;
+}
+const { slug, variant = 'compact', label = 'Agregar', class: className } = Astro.props;
+---
+
+{variant === 'full' ? (
+  <div class:list={['flex flex-col sm:flex-row gap-3', className]} data-add-root>
+    <div class="inline-flex items-center border border-espresso h-12 self-start">
+      <button type="button" data-qty-dec class="w-11 h-full grid place-items-center hover:bg-ivory transition-colors" aria-label="Menos">
+        <Icon name="minus" size={16} />
+      </button>
+      <input
+        type="text"
+        inputmode="numeric"
+        data-qty-input
+        value="1"
+        aria-label="Cantidad"
+        class="w-12 h-full text-center bg-transparent text-meta tabular-nums focus:outline-none"
+      />
+      <button type="button" data-qty-inc class="w-11 h-full grid place-items-center hover:bg-ivory transition-colors" aria-label="Más">
+        <Icon name="plus" size={16} />
+      </button>
+    </div>
+    <button type="button" data-add-btn data-slug={slug} class="btn flex-1 sm:flex-none sm:min-w-[220px]">
+      <span data-add-label>{label}</span>
+    </button>
+  </div>
+) : (
+  <button
+    type="button"
+    data-add-btn
+    data-slug={slug}
+    class:list={['btn btn--ghost w-full', className]}
+  >
+    <Icon name="plus" size={15} />
+    <span data-add-label>{label}</span>
+  </button>
+)}
+
+<script>
+  import { addToCart, MAX_LINE_QTY } from '@/lib/cart';
+
+  if (!(window as any).__rivareAddToCart) {
+    (window as any).__rivareAddToCart = true;
+
+    document.addEventListener('click', (e) => {
+      const el = e.target as HTMLElement;
+
+      // qty stepper (product page)
+      const stepper = el.closest('[data-add-root]');
+      if (stepper) {
+        const input = stepper.querySelector<HTMLInputElement>('[data-qty-input]');
+        if (input) {
+          let v = parseInt(input.value, 10) || 1;
+          if (el.closest('[data-qty-inc]')) v = Math.min(MAX_LINE_QTY, v + 1);
+          if (el.closest('[data-qty-dec]')) v = Math.max(1, v - 1);
+          input.value = String(v);
+        }
+      }
+
+      // add button
+      const btn = el.closest<HTMLButtonElement>('[data-add-btn]');
+      if (!btn || !btn.dataset.slug) return;
+      const root = btn.closest('[data-add-root]');
+      const input = root?.querySelector<HTMLInputElement>('[data-qty-input]');
+      const qty = input ? Math.max(1, parseInt(input.value, 10) || 1) : 1;
+
+      addToCart(btn.dataset.slug, qty);
+
+      const labelEl = btn.querySelector('[data-add-label]');
+      if (labelEl && !btn.dataset.busy) {
+        btn.dataset.busy = '1';
+        const prev = labelEl.textContent;
+        labelEl.textContent = 'Agregado ✓';
+        window.setTimeout(() => {
+          labelEl.textContent = prev;
+          delete btn.dataset.busy;
+        }, 1400);
+      }
+      window.dispatchEvent(new CustomEvent('rivare:cart-added'));
+    });
+
+    document.addEventListener('input', (e) => {
+      const input = (e.target as HTMLElement).closest<HTMLInputElement>('[data-qty-input]');
+      if (!input) return;
+      input.value = input.value.replace(/[^0-9]/g, '').slice(0, 2);
+    });
+    document.addEventListener('change', (e) => {
+      const input = (e.target as HTMLElement).closest<HTMLInputElement>('[data-qty-input]');
+      if (!input) return;
+      const v = Math.min(MAX_LINE_QTY, Math.max(1, parseInt(input.value, 10) || 1));
+      input.value = String(v);
+    });
+  }
+</script>

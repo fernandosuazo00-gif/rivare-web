@@ -1,0 +1,77 @@
+---
+import '@/styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import SEO from '@/components/SEO.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import CartDrawer from '@/components/CartDrawer.astro';
+import { SITE } from '@/data/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /** Hero sits under a transparent header on a dark backdrop. */
+  headerOverlay?: boolean;
+}
+
+const { headerOverlay = false, ...seo } = Astro.props;
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#2a2018" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <SEO {...seo} />
+    <ClientRouter />
+  </head>
+  <body>
+    <a href="#contenido" class="sr-only focus:not-sr-only focus:fixed focus:z-skip focus:left-4 focus:top-4 focus:bg-espresso focus:text-ivory focus:px-4 focus:py-3 focus:text-meta">
+      Saltar al contenido
+    </a>
+
+    <Header overlay={headerOverlay} />
+
+    <main id="contenido">
+      <slot />
+    </main>
+
+    <Footer />
+    <CartDrawer />
+
+    <script>
+      // --- Scroll reveal ------------------------------------------------------
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      function initReveal() {
+        const els = document.querySelectorAll<HTMLElement>('.reveal:not(.is-visible)');
+        if (prefersReduced.matches || !('IntersectionObserver' in window)) {
+          els.forEach((el) => el.classList.add('is-visible'));
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                (entry.target as HTMLElement).classList.add('is-visible');
+                io.unobserve(entry.target);
+              }
+            });
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+        );
+        els.forEach((el) => io.observe(el));
+      }
+
+      initReveal();
+      document.addEventListener('astro:page-load', initReveal);
+    </script>
+  </body>
+</html>

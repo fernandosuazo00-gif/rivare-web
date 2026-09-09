@@ -1,0 +1,22 @@
+---
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+---
+
+<Base title="Página no encontrada" noindex>
+  <section class="u-shell min-h-[60svh] flex flex-col items-center justify-center text-center py-section">
+    <p class="eyebrow">Error 404</p>
+    <h1 class="mt-5 font-display text-display-lg max-w-[16ch]">Este aroma no existe… todavía.</h1>
+    <p class="mt-5 max-w-[42ch] text-taupe-deep leading-relaxed">
+      La página que buscás no está disponible. Volvé a la colección o pedí una
+      fragancia a medida.
+    </p>
+    <div class="mt-8 flex flex-col sm:flex-row gap-3">
+      <a href="/perfumes" class="btn">Ver perfumes</a>
+      <a href="/" class="btn btn--ghost">
+        Ir al inicio
+        <Icon name="arrow-right" size={15} />
+      </a>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,231 @@
+---
+import { getImage } from 'astro:assets';
+import Icon from '@/components/Icon.astro';
+import { products } from '@/data/products';
+import { SITE } from '@/data/site';
+
+// Pre-render small thumbnails for every catalog product so the drawer needs no
+// runtime image work.
+const catalog = await Promise.all(
+  products.map(async (p) => {
+    const thumb = await getImage({
+      src: p.image,
+      width: 160,
+      height: 200,
+      fit: 'cover',
+      format: 'webp',
+    });
+    return {
+      slug: p.slug,
+      name: p.name,
+      inspiredBy: p.inspiredBy,
+      href: `/perfume/${p.slug}`,
+      thumb: thumb.src,
+      priceHnl: p.priceHnl,
+    };
+  }),
+);
+---
+
+<div id="cart-drawer" class="contents">
+  <div
+    data-cart-backdrop
+    hidden
+    class="fixed inset-0 z-drawer-backdrop bg-espresso/40 opacity-0 transition-opacity duration-300"
+  ></div>
+
+  <aside
+    data-cart-panel
+    hidden
+    aria-hidden="true"
+    aria-label="Carrito"
+    class="fixed inset-y-0 right-0 z-drawer w-full max-w-[420px] bg-paper text-ink flex flex-col translate-x-full transition-transform duration-300 ease-editorial shadow-[0_0_60px_rgba(42,32,24,0.18)]"
+  >
+    <div class="flex items-center justify-between h-16 px-gutter border-b border-sand">
+      <p class="eyebrow">Tu selección</p>
+      <button type="button" data-cart-close class="inline-flex items-center justify-center w-11 h-11 -mr-3" aria-label="Cerrar carrito">
+        <Icon name="close" size={20} />
+      </button>
+    </div>
+
+    <div data-cart-empty hidden class="flex-1 flex flex-col items-center justify-center text-center px-8 gap-4">
+      <p class="font-display text-display-sm">Tu carrito está vacío</p>
+      <p class="text-meta text-taupe-deep max-w-[28ch]">Explorá las 15 fragancias RIVÂRE y agregá tus favoritas.</p>
+      <a href="/perfumes" class="btn btn--ghost mt-2" data-cart-close>Ver perfumes</a>
+    </div>
+
+    <ul data-cart-lines class="flex-1 overflow-y-auto divide-y divide-sand"></ul>
+
+    <div data-cart-foot hidden class="border-t border-sand px-gutter py-5 space-y-4">
+      <div class="flex items-baseline justify-between text-meta">
+        <span class="uppercase tracking-[0.14em]">Total</span>
+        <span data-cart-total class="text-ink">A confirmar</span>
+      </div>
+      <p class="text-[0.75rem] leading-relaxed text-taupe-deep">
+        El pedido se coordina y confirma por WhatsApp. No se procesan pagos en el sitio.
+      </p>
+      <a data-cart-wa href="#" target="_blank" rel="noopener" class="btn btn--wa w-full">
+        <Icon name="whatsapp" size={18} />
+        Ordenar por WhatsApp
+      </a>
+      <button type="button" data-cart-clear class="w-full text-center text-meta text-taupe-deep hover:text-caramel-deep transition-colors underline underline-offset-4">
+        Vaciar carrito
+      </button>
+    </div>
+  </aside>
+</div>
+
+<script type="application/json" id="rivare-catalog" set:html={JSON.stringify(catalog)}></script>
+<script type="application/json" id="rivare-config" set:html={JSON.stringify({ currency: SITE.currency })}></script>
+
+<script>
+  import { readCart, setQty, removeFromCart, clearCart, onCartChange, type CartLine } from '@/lib/cart';
+  import { waLink, cartOrderText } from '@/lib/whatsapp';
+  import { formatPrice } from '@/lib/format';
+
+  interface CatalogItem {
+    slug: string;
+    name: string;
+    inspiredBy: string;
+    href: string;
+    thumb: string;
+    priceHnl: number | null;
+  }
+
+  const $ = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel);
+
+  function catalog(): Record<string, CatalogItem> {
+    const el = document.getElementById('rivare-catalog');
+    const arr: CatalogItem[] = el ? JSON.parse(el.textContent || '[]') : [];
+    return Object.fromEntries(arr.map((i) => [i.slug, i]));
+  }
+
+  let isOpen = false;
+  let lastFocus: HTMLElement | null = null;
+
+  function setOpen(next: boolean) {
+    const panel = $('[data-cart-panel]');
+    const backdrop = $('[data-cart-backdrop]');
+    if (!panel || !backdrop) return;
+    isOpen = next;
+    if (next) {
+      lastFocus = document.activeElement as HTMLElement;
+      backdrop.hidden = false;
+      panel.hidden = false;
+      panel.setAttribute('aria-hidden', 'false');
+      void panel.offsetWidth;
+      backdrop.style.opacity = '1';
+      panel.style.transform = 'translateX(0)';
+      document.documentElement.classList.add('no-scroll');
+      panel.querySelector<HTMLElement>('button, a')?.focus();
+    } else {
+      backdrop.style.opacity = '0';
+      panel.style.transform = '';
+      panel.setAttribute('aria-hidden', 'true');
+      document.documentElement.classList.remove('no-scroll');
+      window.setTimeout(() => {
+        if (!isOpen) {
+          backdrop.hidden = true;
+          panel.hidden = true;
+        }
+      }, 320);
+      lastFocus?.focus();
+    }
+  }
+
+  function render(lines: CartLine[]) {
+    const linesEl = $<HTMLUListElement>('[data-cart-lines]');
+    if (!linesEl) return;
+    const items = catalog();
+    const valid = lines.filter((l) => items[l.slug]);
+    const hasItems = valid.length > 0;
+    $('[data-cart-empty]') && ($('[data-cart-empty]')!.hidden = hasItems);
+    $('[data-cart-foot]') && ($('[data-cart-foot]')!.hidden = !hasItems);
+
+    linesEl.innerHTML = '';
+    let priced = 0;
+    let allPriced = true;
+
+    for (const line of valid) {
+      const p = items[line.slug];
+      if (p.priceHnl != null) priced += p.priceHnl * line.qty;
+      else allPriced = false;
+
+      const li = document.createElement('li');
+      li.className = 'flex gap-4 p-gutter';
+      li.innerHTML = `
+        <a href="${p.href}" class="shrink-0 zoom-frame w-[68px] h-[86px] bg-ivory">
+          <img src="${p.thumb}" alt="${p.name} — Eau de Parfum RIVÂRE" width="68" height="86" class="w-full h-full object-cover" loading="lazy" />
+        </a>
+        <div class="flex-1 min-w-0">
+          <a href="${p.href}" class="font-display text-[1.35rem] leading-tight">${p.name}</a>
+          <p class="text-[0.75rem] italic text-taupe-deep">Inspirado en ${p.inspiredBy}</p>
+          <p class="text-[0.7rem] uppercase tracking-[0.12em] text-taupe-deep mt-0.5">EDP · 50 ml</p>
+          <div class="flex items-center justify-between mt-3">
+            <div class="inline-flex items-center border border-sand">
+              <button type="button" data-dec="${p.slug}" class="w-9 h-9 grid place-items-center hover:bg-ivory transition-colors" aria-label="Quitar una unidad de ${p.name}">&minus;</button>
+              <span class="w-8 text-center text-meta tabular-nums">${line.qty}</span>
+              <button type="button" data-inc="${p.slug}" class="w-9 h-9 grid place-items-center hover:bg-ivory transition-colors" aria-label="Agregar una unidad de ${p.name}">+</button>
+            </div>
+            <button type="button" data-remove="${p.slug}" class="text-[0.75rem] text-taupe-deep hover:text-caramel-deep transition-colors underline underline-offset-4">Quitar</button>
+          </div>
+        </div>`;
+      linesEl.appendChild(li);
+    }
+
+    const totalEl = $('[data-cart-total]');
+    if (totalEl) {
+      totalEl.textContent = !hasItems
+        ? 'A confirmar'
+        : allPriced
+          ? formatPrice(priced)
+          : priced > 0
+            ? `${formatPrice(priced)} + a confirmar`
+            : 'A confirmar por WhatsApp';
+    }
+
+    const waEl = $<HTMLAnchorElement>('[data-cart-wa]');
+    if (waEl) {
+      waEl.href = waLink(
+        cartOrderText(valid.map((l) => ({ name: items[l.slug].name, inspiredBy: items[l.slug].inspiredBy, qty: l.qty }))),
+      );
+    }
+  }
+
+  // --- Global wiring: bind once for the lifetime of the tab -----------------
+  if (!(window as any).__rivareDrawer) {
+    (window as any).__rivareDrawer = true;
+
+    window.addEventListener('rivare:cart-open', () => setOpen(true));
+    window.addEventListener('rivare:cart-added', () => setOpen(true));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen) setOpen(false);
+    });
+
+    // Delegated clicks (survive DOM swaps from view transitions)
+    document.addEventListener('click', (e) => {
+      const el = e.target as HTMLElement;
+      if (el.closest('[data-cart-close]')) return setOpen(false);
+      if (el.closest('[data-cart-backdrop]')) return setOpen(false);
+      if (el.closest('[data-cart-clear]')) return clearCart();
+      const btn = el.closest<HTMLButtonElement>('[data-inc],[data-dec],[data-remove]');
+      if (btn && btn.closest('[data-cart-lines]')) {
+        const cur = readCart();
+        const qtyOf = (slug: string) => cur.find((l) => l.slug === slug)?.qty ?? 0;
+        if (btn.dataset.inc) setQty(btn.dataset.inc, qtyOf(btn.dataset.inc) + 1);
+        else if (btn.dataset.dec) setQty(btn.dataset.dec, qtyOf(btn.dataset.dec) - 1);
+        else if (btn.dataset.remove) removeFromCart(btn.dataset.remove);
+      }
+    });
+
+    onCartChange(render);
+  }
+
+  // Re-render against the fresh DOM on every page load
+  const paint = () => render(readCart());
+  paint();
+  document.addEventListener('astro:page-load', paint);
+  document.addEventListener('astro:after-swap', () => {
+    if (isOpen) setOpen(false);
+  });
+</script>

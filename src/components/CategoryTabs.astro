@@ -1,0 +1,34 @@
+---
+import { COLLECTION_NAV } from '@/data/site';
+import { categoryCounts } from '@/data/products';
+
+interface Props {
+  active: 'all' | 'para-hombre' | 'para-mujer' | 'unisex';
+  class?: string;
+}
+const { active, class: className } = Astro.props;
+---
+
+<nav
+  class:list={['flex flex-wrap items-center gap-x-6 gap-y-2 text-meta uppercase tracking-[0.16em]', className]}
+  aria-label="Colecciones"
+>
+  {COLLECTION_NAV.map((c) => {
+    const isActive = c.slug === active;
+    return (
+      <a
+        href={c.href}
+        aria-current={isActive ? 'page' : undefined}
+        class:list={[
+          'inline-flex items-baseline gap-1.5 py-2 border-b transition-colors',
+          isActive ? 'border-caramel-deep text-ink' : 'border-transparent text-taupe-deep hover:text-ink',
+        ]}
+      >
+        {c.label}
+        <span class="text-[0.65rem] tabular-nums opacity-70">
+          {categoryCounts[c.slug]}
+        </span>
+      </a>
+    );
+  })}
+</nav>

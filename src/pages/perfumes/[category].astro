@@ -1,0 +1,51 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '@/layouts/Base.astro';
+import CollectionView from '@/components/CollectionView.astro';
+import { productsByCategory } from '@/data/products';
+import type { CategorySlug } from '@/data/site';
+
+export const getStaticPaths = (() => {
+  const meta: Record<CategorySlug, { eyebrow: string; title: string; intro: string; desc: string }> = {
+    'para-hombre': {
+      eyebrow: 'Para hombre',
+      title: 'Fragancias para hombre',
+      intro:
+        'Aromáticas frescas, amaderadas y ahumadas. Seis Eau de Parfum de 50 ml inspirados en referencias masculinas reconocidas y firmados por RIVÂRE.',
+      desc: 'Perfumes para hombre en Honduras — Eau de Parfum 50 ml de RIVÂRE, inspirados en los grandes. Azure, Bianco, Lumen, Nomada, Royale y Uomo.',
+    },
+    'para-mujer': {
+      eyebrow: 'Para mujer',
+      title: 'Fragancias para mujer',
+      intro:
+        'Florales, dulces y luminosas. Cinco Eau de Parfum de 50 ml inspirados en íconos femeninos e interpretados por RIVÂRE.',
+      desc: 'Perfumes para mujer en Honduras — Eau de Parfum 50 ml de RIVÂRE, inspirados en los grandes. Bloom, Diva, Donna, Libre y Rosé.',
+    },
+    unisex: {
+      eyebrow: 'Unisex',
+      title: 'Fragancias unisex',
+      intro:
+        'Firmas que no entienden de género: ámbar, sándalo, cuero y cítricos. Cuatro Eau de Parfum de 50 ml de RIVÂRE.',
+      desc: 'Perfumes unisex en Honduras — Eau de Parfum 50 ml de RIVÂRE. Amber, Cielo, Ombre y Terra.',
+    },
+  };
+
+  return (Object.keys(meta) as CategorySlug[]).map((category) => ({
+    params: { category },
+    props: { category, meta: meta[category] },
+  }));
+}) satisfies GetStaticPaths;
+
+const { category, meta } = Astro.props;
+const list = productsByCategory(category);
+---
+
+<Base title={meta.title} description={meta.desc}>
+  <CollectionView
+    active={category}
+    eyebrow={meta.eyebrow}
+    title={meta.title}
+    intro={meta.intro}
+    products={list}
+  />
+</Base>

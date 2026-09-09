@@ -1,0 +1,54 @@
+---
+import { testimonials, TESTIMONIALS_SOURCE } from '@/data/testimonials';
+
+// Duplicate the list so the marquee loop is seamless (-50% translate).
+const row = [...testimonials, ...testimonials];
+---
+
+<section class="u-section overflow-hidden" aria-labelledby="testimonios-title">
+  <div class="u-shell">
+    <p class="eyebrow reveal">Ellos ya los probaron</p>
+    <h2 id="testimonios-title" class="reveal mt-4 font-display text-display-md max-w-[16ch]">
+      Dicen que huelen demasiado parecido. Nosotros dejamos que ellos hablen.
+    </h2>
+  </div>
+
+  <div class="marquee-mask mt-12 select-none" aria-hidden="true">
+    <div class="marquee-track gap-4 pl-4">
+      {row.map((quote) => (
+        <blockquote class="shrink-0 max-w-[19rem] border border-sand bg-paper px-6 py-5">
+          <p class="font-display text-[1.35rem] leading-snug text-ink">“{quote}”</p>
+        </blockquote>
+      ))}
+    </div>
+  </div>
+
+  <ul class="sr-only">
+    {testimonials.map((q) => <li>{q}</li>)}
+  </ul>
+
+  <p class="u-shell mt-8 text-[0.75rem] uppercase tracking-[0.16em] text-taupe-deep">
+    {TESTIMONIALS_SOURCE}
+  </p>
+</section>
+
+<script>
+  // Pause the marquee on hover / focus within, and when off-screen.
+  function initMarquee() {
+    document.querySelectorAll<HTMLElement>('.marquee-track').forEach((track) => {
+      const wrap = track.closest('.marquee-mask');
+      if (!wrap) return;
+      wrap.addEventListener('mouseenter', () => (track.style.animationPlayState = 'paused'));
+      wrap.addEventListener('mouseleave', () => (track.style.animationPlayState = 'running'));
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver((entries) => {
+          entries.forEach((en) => {
+            track.style.animationPlayState = en.isIntersecting ? 'running' : 'paused';
+          });
+        }).observe(track);
+      }
+    });
+  }
+  initMarquee();
+  document.addEventListener('astro:page-load', initMarquee);
+</script>

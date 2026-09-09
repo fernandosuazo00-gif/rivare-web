@@ -1,0 +1,23 @@
+---
+import ProductCard from '@/components/ProductCard.astro';
+import type { Product } from '@/data/products';
+
+interface Props {
+  products: Product[];
+  /** how many images load eagerly (above the fold) */
+  eager?: number;
+  class?: string;
+}
+const { products, eager = 4, class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    'grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3 md:gap-x-6 md:gap-y-16 xl:grid-cols-4',
+    className,
+  ]}
+>
+  {products.map((product, i) => (
+    <ProductCard product={product} index={i} loading={i < eager ? 'eager' : 'lazy'} />
+  ))}
+</div>

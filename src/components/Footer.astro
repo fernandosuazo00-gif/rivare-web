@@ -1,0 +1,64 @@
+---
+import { Image } from 'astro:assets';
+import Icon from '@/components/Icon.astro';
+import { NAV, COLLECTION_NAV, SITE } from '@/data/site';
+import { waLink, GENERIC_WA_TEXT } from '@/lib/whatsapp';
+import wordmarkCream from '@/assets/brand/wordmark-cream.png';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="is-dark">
+  <div class="u-shell u-section grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
+    <div>
+      <Image src={wordmarkCream} alt={SITE.name} widths={[160, 240]} sizes="150px" class="h-6 w-auto" />
+      <p class="mt-5 max-w-[34ch] text-sand/85 text-[0.95rem] leading-relaxed">
+        {SITE.tagline} Eau de Parfum inspirado en las fragancias más reconocidas del mundo,
+        a tu precio y en tu ciudad.
+      </p>
+      <p class="mt-5 eyebrow">{SITE.locality}, {SITE.countryName}</p>
+    </div>
+
+    <nav aria-label="Perfumes" class="text-meta">
+      <p class="eyebrow mb-4">Perfumes</p>
+      <ul class="space-y-2.5">
+        {COLLECTION_NAV.map((c) => (
+          <li><a href={c.href} class="text-sand/85 hover:text-ivory transition-colors">{c.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <nav aria-label="RIVÂRE" class="text-meta">
+      <p class="eyebrow mb-4">RIVÂRE</p>
+      <ul class="space-y-2.5">
+        {NAV.filter((n) => n.href !== '/').map((n) => (
+          <li><a href={n.href} class="text-sand/85 hover:text-ivory transition-colors">{n.label}</a></li>
+        ))}
+        <li>
+          <a href={waLink(GENERIC_WA_TEXT)} target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-sand/85 hover:text-ivory transition-colors">
+            <Icon name="whatsapp" size={15} /> {SITE.whatsapp.display}
+          </a>
+        </li>
+        {SITE.instagramUrl && (
+          <li>
+            <a href={SITE.instagramUrl} target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-sand/85 hover:text-ivory transition-colors">
+              <Icon name="instagram" size={15} /> Instagram
+            </a>
+          </li>
+        )}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="u-shell pb-10">
+    <hr class="rule mb-6" />
+    <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between text-[0.75rem] text-sand/60 leading-relaxed">
+      <p>© {year} {SITE.name}. Todos los derechos reservados.</p>
+      <p class="max-w-[70ch] md:text-right">
+        RIVÂRE elabora fragancias <em>inspiradas</em> en aromas reconocidos. No somos fabricantes,
+        distribuidores ni estamos afiliados o asociados con las marcas mencionadas; todas las marcas
+        pertenecen a sus respectivos dueños.
+      </p>
+    </div>
+  </div>
+</footer>
