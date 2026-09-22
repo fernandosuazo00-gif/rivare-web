@@ -1,0 +1,153 @@
+---
+import { getImage } from 'astro:assets';
+import Icon from '@/components/Icon.astro';
+import { products } from '@/data/products';
+import { CATEGORY_LABEL } from '@/data/site';
+
+const catalog = await Promise.all(
+  products.map(async (p) => {
+    const thumb = await getImage({ src: p.image, width: 120, height: 150, fit: 'cover', format: 'webp' });
+    return {
+      slug: p.slug,
+      name: p.name,
+      inspiredBy: p.inspiredBy,
+      category: CATEGORY_LABEL[p.category],
+      href: `/perfume/${p.slug}`,
+      thumb: thumb.src,
+      priceHnl: p.priceHnl,
+    };
+  }),
+);
+---
+
+<div id="search-overlay" hidden class="fixed inset-0 z-mobile-nav">
+  <div data-search-backdrop class="absolute inset-0 bg-espresso/50"></div>
+  <div class="absolute inset-x-0 top-0 bg-paper max-h-[85svh] flex flex-col shadow-[0_20px_60px_rgba(42,32,24,0.25)]">
+    <div class="u-shell flex items-center gap-4 h-20 border-b border-sand">
+      <Icon name="search" size={20} class="text-taupe-deep shrink-0" />
+      <input
+        type="search"
+        data-search-input
+        placeholder="Buscá por nombre o inspiración… (Ej. Amber, Sauvage)"
+        autocomplete="off"
+        class="flex-1 bg-transparent text-[1.1rem] font-display placeholder:text-taupe-deep/70 focus:outline-none"
+      />
+      <button type="button" data-search-close class="inline-flex items-center justify-center w-11 h-11 -mr-2 shrink-0" aria-label="Cerrar búsqueda">
+        <Icon name="close" size={20} />
+      </button>
+    </div>
+
+    <div class="u-shell flex-1 overflow-y-auto py-4">
+      <p data-search-hint class="text-meta text-taupe-deep">Escribí para buscar entre las {catalog.length} fragancias RIVÂRE.</p>
+      <p data-search-empty hidden class="text-meta text-taupe-deep">Sin resultados. Probá con otro nombre o inspiración.</p>
+      <ul data-search-results class="divide-y divide-sand"></ul>
+    </div>
+  </div>
+</div>
+
+<script type="application/json" id="rivare-search-catalog" set:html={JSON.stringify(catalog)}></script>
+
+<script>
+  import { formatPrice } from '@/lib/format';
+
+  interface Item {
+    slug: string;
+    name: string;
+    inspiredBy: string;
+    category: string;
+    href: string;
+    thumb: string;
+    priceHnl: number | null;
+  }
+
+  const norm = (s: string) =>
+    s
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '');
+
+  function catalog(): Item[] {
+    const el = document.getElementById('rivare-search-catalog');
+    return el ? JSON.parse(el.textContent || '[]') : [];
+  }
+
+  function render(query: string) {
+    const list = document.querySelector<HTMLUListElement>('[data-search-results]');
+    const hint = document.querySelector<HTMLElement>('[data-search-hint]');
+    const empty = document.querySelector<HTMLElement>('[data-search-empty]');
+    if (!list) return;
+    const q = norm(query.trim());
+    list.innerHTML = '';
+
+    if (!q) {
+      hint && (hint.hidden = false);
+      empty && (empty.hidden = true);
+      return;
+    }
+    hint && (hint.hidden = true);
+
+    const items = catalog()
+      .filter((it) => norm(it.name).includes(q) || norm(it.inspiredBy).includes(q))
+      .slice(0, 8);
+
+    empty && (empty.hidden = items.length > 0);
+
+    for (const it of items) {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <a href="${it.href}" class="flex items-center gap-4 py-3 group">
+          <span class="shrink-0 w-14 h-[70px] bg-ivory overflow-hidden">
+            <img src="${it.thumb}" alt="" width="56" height="70" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
+          </span>
+          <span class="flex-1 min-w-0">
+            <span class="block font-display text-[1.2rem] leading-tight">${it.name}</span>
+            <span class="block text-[0.8rem] italic text-taupe-deep">Inspirado en ${it.inspiredBy}</span>
+          </span>
+          <span class="text-meta text-taupe-deep shrink-0">${formatPrice(it.priceHnl)}</span>
+        </a>`;
+      list.appendChild(li);
+    }
+  }
+
+  let isOpen = false;
+  function setOpen(next: boolean) {
+    const panel = document.getElementById('search-overlay');
+    const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+    if (!panel) return;
+    isOpen = next;
+    panel.hidden = !next;
+    if (next) {
+      document.documentElement.classList.add('no-scroll');
+      window.setTimeout(() => input?.focus(), 30);
+    } else {
+      document.documentElement.classList.remove('no-scroll');
+      if (input) input.value = '';
+      render('');
+    }
+  }
+
+  if (!(window as any).__rivareSearch) {
+    (window as any).__rivareSearch = true;
+
+    window.addEventListener('rivare:search-open', () => setOpen(true));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen) setOpen(false);
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setOpen(!isOpen);
+      }
+    });
+    document.addEventListener('click', (e) => {
+      const el = e.target as HTMLElement;
+      if (el.closest('[data-search-close]') || el.closest('[data-search-backdrop]')) setOpen(false);
+    });
+    document.addEventListener('input', (e) => {
+      const input = (e.target as HTMLElement).closest<HTMLInputElement>('[data-search-input]');
+      if (input) render(input.value);
+    });
+  }
+
+  document.addEventListener('astro:after-swap', () => {
+    if (isOpen) setOpen(false);
+  });
+</script>

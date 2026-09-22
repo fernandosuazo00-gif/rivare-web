@@ -1,0 +1,29 @@
+---
+import ProductCard from '@/components/ProductCard.astro';
+import type { Product } from '@/data/products';
+
+interface Props {
+  products: Product[];
+  eager?: number;
+}
+const { products, eager = 2 } = Astro.props;
+---
+
+<div class="relative">
+  <div data-carousel class="carousel flex md:grid md:grid-cols-4 gap-5 md:gap-6 overflow-x-auto md:overflow-visible -mx-gutter px-gutter md:mx-0 md:px-0 snap-x snap-mandatory scroll-px-gutter">
+    {products.map((product, i) => (
+      <div class="w-[62vw] sm:w-[46vw] md:w-auto shrink-0 md:shrink snap-start">
+        <ProductCard product={product} index={i} loading={i < eager ? 'eager' : 'lazy'} />
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .carousel {
+    scrollbar-width: none;
+  }
+  .carousel::-webkit-scrollbar {
+    display: none;
+  }
+</style>

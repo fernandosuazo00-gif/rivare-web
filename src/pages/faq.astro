@@ -1,0 +1,76 @@
+---
+import Base from '@/layouts/Base.astro';
+import { SITE } from '@/data/site';
+
+const faqs: { q: string; a: string }[] = [
+  {
+    q: '¿Qué es RIVÂRE?',
+    a: 'Una perfumería hecha en Honduras. Partimos de perfiles olfativos ya reconocidos en el mundo y los interpretamos en Eau de Parfum de 50 ml, a tu precio y en tu ciudad.',
+  },
+  {
+    q: '¿RIVÂRE vende réplicas o perfumes originales?',
+    a: 'RIVÂRE es su propia marca. Cada fragancia está inspirada en un perfil olfativo reconocido, pero no somos fabricantes, distribuidores ni estamos afiliados o asociados con esas casas.',
+  },
+  {
+    q: '¿Cuánto cuesta cada perfume?',
+    a: 'Todas las fragancias RIVÂRE cuestan L.600 — Eau de Parfum, 50 ml / 1.7 fl oz.',
+  },
+  {
+    q: '¿Cómo hago mi pedido?',
+    a: 'Agregá las fragancias que querés al carrito (o armá tu bundle) y confirmá el pedido por WhatsApp. Coordinamos disponibilidad, entrega y pago directamente con vos.',
+  },
+  {
+    q: '¿Aceptan pagos en línea?',
+    a: 'No. RIVÂRE no procesa pagos en el sitio — todo pedido se coordina y confirma por WhatsApp.',
+  },
+  {
+    q: '¿Hacen envíos?',
+    a: 'La entrega se coordina directamente por WhatsApp según tu ubicación.',
+  },
+  {
+    q: '¿Puedo pedir una fragancia que no está en el catálogo?',
+    a: 'Sí. Es nuestro servicio de fragancias a medida: nos decís cuál perfume amás y lo recreamos en Eau de Parfum de 50 ml.',
+  },
+  {
+    q: '¿Cómo funciona el descuento por Bundle?',
+    a: '2 perfumes desbloquean envío gratis; 3 dan 10% OFF; 4 dan 15% OFF; y 5 o más dan 20% OFF, siempre con envío gratis. Armalo en la página Armá tu bundle.',
+  },
+  {
+    q: '¿Métodos de pago y cambios?',
+    a: 'Se coordinan directamente por WhatsApp con RIVÂRE al confirmar tu pedido.',
+  },
+];
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Base
+  title="Preguntas frecuentes"
+  description={`Todo sobre cómo pedir, pagar y recibir tus fragancias RIVÂRE por WhatsApp (${SITE.whatsapp.display}).`}
+  jsonLd={faqLd}
+>
+  <section class="u-shell u-section max-w-[72ch]">
+    <p class="eyebrow reveal">Preguntas frecuentes</p>
+    <h1 class="reveal mt-5 font-display text-display-lg">¿En qué te ayudamos?</h1>
+
+    <div class="reveal mt-12 divide-y divide-sand border-t border-b border-sand">
+      {faqs.map((f) => (
+        <details class="group/f py-5">
+          <summary class="list-none flex items-center justify-between gap-4 cursor-pointer select-none">
+            <span class="font-display text-[1.25rem]">{f.q}</span>
+            <span class="shrink-0 text-taupe-deep text-xl leading-none transition-transform duration-200 group-open/f:rotate-45">+</span>
+          </summary>
+          <p class="mt-3 text-[0.98rem] leading-relaxed text-taupe-deep max-w-[60ch]">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+</Base>

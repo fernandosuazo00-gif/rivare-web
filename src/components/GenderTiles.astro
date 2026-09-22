@@ -1,0 +1,38 @@
+---
+import { Image } from 'astro:assets';
+import { collectionCounts } from '@/data/products';
+import { CATEGORY_LABEL } from '@/data/site';
+import mujerImg from '@/assets/gender/mujer.jpg';
+import hombreImg from '@/assets/gender/hombre.jpg';
+import unisexImg from '@/assets/gender/unisex.jpg';
+
+const tiles = [
+  { slug: 'mujer' as const, image: mujerImg, href: '/perfumes/mujer' },
+  { slug: 'hombre' as const, image: hombreImg, href: '/perfumes/hombre' },
+  { slug: 'unisex' as const, image: unisexImg, href: '/perfumes/unisex' },
+];
+---
+
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+  {tiles.map((tile, i) => (
+    <a
+      href={tile.href}
+      class="reveal group relative block aspect-[4/5] overflow-hidden bg-espresso"
+      style={`--reveal-delay:${i * 90}ms`}
+      aria-label={`Comprar fragancias ${CATEGORY_LABEL[tile.slug]} — ${collectionCounts[tile.slug]} disponibles`}
+    >
+      <Image
+        src={tile.image}
+        alt={`Colección RIVÂRE ${CATEGORY_LABEL[tile.slug]}`}
+        widths={[420, 640, 860]}
+        sizes="(min-width:768px) 32vw, 92vw"
+        loading="lazy"
+        class="w-full h-full object-cover transition-transform duration-700 ease-editorial group-hover:scale-105"
+      />
+      <span class="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 p-5 bg-gradient-to-t from-espresso/80 via-espresso/10 to-transparent">
+        <span class="font-display text-[1.6rem] text-ivory">{CATEGORY_LABEL[tile.slug]}</span>
+        <span class="text-[0.7rem] uppercase tracking-[0.16em] text-sand/85">{collectionCounts[tile.slug]} fragancias</span>
+      </span>
+    </a>
+  ))}
+</div>

@@ -3,10 +3,10 @@ import Icon from '@/components/Icon.astro';
 import CategoryTabs from '@/components/CategoryTabs.astro';
 import ProductGrid from '@/components/ProductGrid.astro';
 import type { Product } from '@/data/products';
-import { waLink, customFragranceText } from '@/lib/whatsapp';
+import type { CollectionSlug } from '@/data/site';
 
 interface Props {
-  active: 'all' | 'para-hombre' | 'para-mujer' | 'unisex';
+  active: CollectionSlug;
   eyebrow: string;
   title: string;
   intro: string;
@@ -22,7 +22,7 @@ const { active, eyebrow, title, intro, products } = Astro.props;
     <p class="reveal mt-6 text-[1.05rem] leading-relaxed text-taupe-deep">{intro}</p>
   </header>
 
-  <div class="reveal mt-10 border-y border-sand py-4 sticky top-16 lg:top-20 z-30 bg-paper/95 supports-[backdrop-filter]:bg-paper/80 backdrop-blur-sm -mx-gutter px-gutter">
+  <div class="reveal mt-10 border-y border-sand py-4 sticky top-24 lg:top-28 z-30 bg-paper/95 supports-[backdrop-filter]:bg-paper/80 backdrop-blur-sm -mx-gutter px-gutter">
     <CategoryTabs active={active} />
   </div>
 

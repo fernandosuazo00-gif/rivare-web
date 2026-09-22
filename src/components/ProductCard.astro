@@ -30,6 +30,11 @@ const delay = Math.min(index, 5) * 70;
       <span class="absolute left-3 top-3 text-[0.65rem] uppercase tracking-[0.18em] text-taupe-deep bg-paper/85 px-2 py-1">
         {CATEGORY_LABEL[product.category]}
       </span>
+      {product.isNew && (
+        <span class="absolute right-3 top-3 text-[0.65rem] uppercase tracking-[0.18em] text-ivory bg-caramel-deep px-2 py-1">
+          Nuevo
+        </span>
+      )}
     </div>
 
     <div class="pt-4">

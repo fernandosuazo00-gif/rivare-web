@@ -1,0 +1,58 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '@/layouts/Base.astro';
+import CollectionView from '@/components/CollectionView.astro';
+import { productsByCollection } from '@/data/products';
+import type { CollectionSlug } from '@/data/site';
+
+type Meta = { eyebrow: string; title: string; intro: string; desc: string };
+
+export const getStaticPaths = (() => {
+  const meta: Record<Exclude<CollectionSlug, 'all'>, Meta> = {
+    bestsellers: {
+      eyebrow: 'Bestsellers',
+      title: 'Los favoritos de RIVÂRE',
+      intro:
+        'La selección más pedida del catálogo: los perfiles olfativos que más reconocés, interpretados en Eau de Parfum de 50 ml.',
+      desc: 'Los perfumes favoritos de RIVÂRE en Honduras — Eau de Parfum 50 ml, inspirados en los grandes.',
+    },
+    novedades: {
+      eyebrow: 'Novedades',
+      title: 'Recién llegados',
+      intro: 'Las incorporaciones más recientes al catálogo RIVÂRE. Eau de Parfum de 50 ml.',
+      desc: 'Las fragancias más nuevas de RIVÂRE — Eau de Parfum 50 ml, hechas en Honduras.',
+    },
+    hombre: {
+      eyebrow: 'Hombre',
+      title: 'Fragancias para hombre',
+      intro:
+        'Aromáticas frescas, amaderadas y ahumadas. Eau de Parfum de 50 ml inspirados en referencias masculinas reconocidas y firmados por RIVÂRE.',
+      desc: 'Perfumes para hombre en Honduras — Eau de Parfum 50 ml de RIVÂRE, inspirados en los grandes.',
+    },
+    mujer: {
+      eyebrow: 'Mujer',
+      title: 'Fragancias para mujer',
+      intro: 'Florales, dulces y luminosas. Eau de Parfum de 50 ml inspirados en íconos femeninos e interpretados por RIVÂRE.',
+      desc: 'Perfumes para mujer en Honduras — Eau de Parfum 50 ml de RIVÂRE, inspirados en los grandes.',
+    },
+    unisex: {
+      eyebrow: 'Unisex',
+      title: 'Fragancias unisex',
+      intro: 'Firmas que no entienden de género: ámbar, sándalo, cuero y cítricos. Eau de Parfum de 50 ml de RIVÂRE.',
+      desc: 'Perfumes unisex en Honduras — Eau de Parfum 50 ml de RIVÂRE.',
+    },
+  };
+
+  return (Object.keys(meta) as (keyof typeof meta)[]).map((collection) => ({
+    params: { collection },
+    props: { collection, meta: meta[collection] },
+  }));
+}) satisfies GetStaticPaths;
+
+const { collection, meta } = Astro.props;
+const list = productsByCollection(collection);
+---
+
+<Base title={meta.title} description={meta.desc}>
+  <CollectionView active={collection} eyebrow={meta.eyebrow} title={meta.title} intro={meta.intro} products={list} />
+</Base>

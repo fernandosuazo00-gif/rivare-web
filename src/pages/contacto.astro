@@ -1,0 +1,40 @@
+---
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+import { SITE } from '@/data/site';
+import { waLink, GENERIC_WA_TEXT } from '@/lib/whatsapp';
+---
+
+<Base title="Contacto" description={`Escribinos a RIVÂRE por WhatsApp al ${SITE.whatsapp.display}. Perfumería hecha en ${SITE.locality}, ${SITE.countryName}.`}>
+  <section class="u-shell u-section max-w-[62ch]">
+    <p class="eyebrow reveal">Contacto</p>
+    <h1 class="reveal mt-5 font-display text-display-lg">Hablemos por WhatsApp.</h1>
+    <p class="reveal mt-6 text-[1.05rem] leading-relaxed text-taupe-deep">
+      RIVÂRE no tiene tienda en línea con pago directo: cada pedido, consulta de disponibilidad,
+      envío o fragancia a medida se coordina y confirma por WhatsApp, directamente con nosotros.
+    </p>
+
+    <div class="reveal mt-10 grid gap-6 sm:grid-cols-2">
+      <a href={waLink(GENERIC_WA_TEXT)} target="_blank" rel="noopener" class="btn btn--wa">
+        <Icon name="whatsapp" size={18} />
+        {SITE.whatsapp.display}
+      </a>
+      <p class="text-meta text-taupe-deep self-center">{SITE.locality}, {SITE.countryName}</p>
+    </div>
+
+    {SITE.instagramUrl && (
+      <a href={SITE.instagramUrl} target="_blank" rel="noopener" class="reveal mt-8 inline-flex items-center gap-2 text-meta uppercase tracking-[0.16em]">
+        <Icon name="instagram" size={16} />
+        <span class="link-underline">Seguinos en Instagram</span>
+      </a>
+    )}
+
+    <hr class="rule my-12" />
+
+    <p class="reveal text-meta text-taupe-deep leading-relaxed">
+      ¿Buscás una fragancia específica? Contanos en{' '}
+      <a href="/fragancias-a-medida" class="link-underline text-ink">fragancias a medida</a>. ¿Querés armar tu propio
+      set con descuento? Visitá <a href="/bundle" class="link-underline text-ink">Armá tu bundle</a>.
+    </p>
+  </section>
+</Base>

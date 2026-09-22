@@ -12,6 +12,11 @@ export default defineConfig({
     tailwind({ applyBaseStyles: false }),
     sitemap(),
   ],
+  // Old collection URLs from the previous IA — keep working, point to the new ones.
+  redirects: {
+    '/perfumes/para-hombre': '/perfumes/hombre',
+    '/perfumes/para-mujer': '/perfumes/mujer',
+  },
   image: {
     // Studio product shots are 1792x2400. These widths cover 1x/2x for every layout slot.
     responsiveStyles: true,

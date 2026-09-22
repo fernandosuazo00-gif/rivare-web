@@ -1,9 +1,9 @@
 ---
-import { COLLECTION_NAV } from '@/data/site';
-import { categoryCounts } from '@/data/products';
+import { COLLECTIONS, COLLECTION_TABS, type CollectionSlug } from '@/data/site';
+import { collectionCounts } from '@/data/products';
 
 interface Props {
-  active: 'all' | 'para-hombre' | 'para-mujer' | 'unisex';
+  active: CollectionSlug;
   class?: string;
 }
 const { active, class: className } = Astro.props;
@@ -13,8 +13,9 @@ const { active, class: className } = Astro.props;
   class:list={['flex flex-wrap items-center gap-x-6 gap-y-2 text-meta uppercase tracking-[0.16em]', className]}
   aria-label="Colecciones"
 >
-  {COLLECTION_NAV.map((c) => {
-    const isActive = c.slug === active;
+  {COLLECTION_TABS.map((slug) => {
+    const isActive = slug === active;
+    const c = COLLECTIONS[slug];
     return (
       <a
         href={c.href}
@@ -26,7 +27,7 @@ const { active, class: className } = Astro.props;
       >
         {c.label}
         <span class="text-[0.65rem] tabular-nums opacity-70">
-          {categoryCounts[c.slug]}
+          {collectionCounts[slug]}
         </span>
       </a>
     );

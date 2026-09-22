@@ -1,0 +1,371 @@
+---
+import { getImage } from 'astro:assets';
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+import { products } from '@/data/products';
+import { CATEGORY_LABEL, COLLECTIONS, COLLECTION_TABS } from '@/data/site';
+import { formatPrice } from '@/lib/format';
+import { BUNDLE_MILESTONES, MAX_BUNDLE_SLOTS } from '@/lib/bundle';
+
+const catalog = await Promise.all(
+  products.map(async (p) => {
+    const thumb = await getImage({ src: p.image, width: 320, height: 400, fit: 'cover', format: 'webp' });
+    return {
+      slug: p.slug,
+      name: p.name,
+      inspiredBy: p.inspiredBy,
+      category: p.category,
+      thumb: thumb.src,
+      priceHnl: p.priceHnl,
+    };
+  }),
+);
+
+const pickerFilters = COLLECTION_TABS; // all · bestsellers · hombre · mujer · unisex
+const slotNumbers = Array.from({ length: MAX_BUNDLE_SLOTS }, (_, i) => i + 1);
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '¿Cómo funciona el descuento por bundle de RIVÂRE?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: '2 perfumes desbloquean envío gratis. 3 dan 10% de descuento. 4 dan 15%. 5 o más dan 20%, siempre con envío gratis. Todas las fragancias cuestan L.600.',
+      },
+    },
+  ],
+};
+---
+
+<Base
+  title="Armá tu bundle"
+  description="Elegí hasta 9 fragancias RIVÂRE y desbloqueá envío gratis y hasta 20% de descuento. Ordená el bundle directo por WhatsApp."
+  jsonLd={faqLd}
+>
+  <section class="u-shell pt-10 pb-10 lg:pt-16 max-w-[64ch]">
+    <p class="eyebrow reveal">Más formas de comprar</p>
+    <h1 class="reveal mt-5 font-display text-display-lg">Armá tu bundle</h1>
+    <p class="reveal mt-6 text-[1.05rem] leading-relaxed text-taupe-deep">
+      Elegí tus fragancias favoritas y mirá el descuento crecer en tiempo real. Desde el segundo
+      perfume el envío es gratis; desde el tercero, empezás a ahorrar hasta 20%.
+    </p>
+  </section>
+
+  <!-- Milestone strip -->
+  <section class="u-shell pb-6" aria-label="Niveles de descuento">
+    <div class="grid grid-cols-4 gap-2 sm:gap-4 border border-sand">
+      {BUNDLE_MILESTONES.map((m) => (
+        <div data-milestone={m.count} class="flex flex-col items-center gap-1.5 py-4 px-1 text-center border-r border-sand last:border-r-0 transition-colors">
+          <span data-milestone-icon class="w-7 h-7 rounded-full border border-taupe-deep/40 grid place-items-center text-taupe-deep transition-colors">
+            <Icon name={m.discountPct === 0 ? 'truck' : 'tag'} size={14} />
+          </span>
+          <span data-milestone-text class="text-[0.68rem] uppercase tracking-[0.12em] text-taupe-deep transition-colors">{m.count}+ perfumes</span>
+          <span data-milestone-text class="font-display text-[1rem] text-ink transition-colors">{m.label}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- 9 slots -->
+  <section class="pb-10" aria-label="Tu selección">
+    <div class="u-shell overflow-x-auto pb-2">
+      <ol data-bundle-slots class="flex sm:grid sm:grid-cols-9 gap-3 min-w-max sm:min-w-0">
+        {slotNumbers.map((n) => {
+          const milestone = BUNDLE_MILESTONES.find((m) => m.count === n);
+          return (
+            <li
+              data-slot={n}
+              class="w-24 sm:w-auto shrink-0 aspect-[3/4] relative border border-dashed border-sand-deep bg-ivory flex flex-col items-center justify-center text-center transition-colors"
+            >
+              <span data-slot-empty class="text-taupe-deep">
+                <Icon name="plus" size={18} />
+              </span>
+              <div data-slot-filled hidden class="absolute inset-0">
+                <img data-slot-img alt="" class="w-full h-full object-cover" />
+                <button type="button" data-slot-remove class="absolute top-1 right-1 w-6 h-6 grid place-items-center bg-paper/90 text-ink" aria-label="Quitar del bundle">
+                  <Icon name="close" size={13} />
+                </button>
+                <span data-slot-name class="absolute inset-x-0 bottom-0 bg-espresso/80 text-ivory text-[0.62rem] uppercase tracking-[0.1em] px-1 py-1 truncate"></span>
+              </div>
+              {milestone && (
+                <span class="absolute -bottom-6 inset-x-0 text-center text-[0.62rem] uppercase tracking-[0.1em] text-taupe-deep whitespace-nowrap">
+                  {milestone.label}
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+    <p data-slot-hint class="u-shell mt-9 text-meta text-taupe-deep"></p>
+  </section>
+
+  <!-- Price summary -->
+  <section class="u-shell pb-16">
+    <div class="border border-sand max-w-xl">
+      <button type="button" data-summary-toggle class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left" aria-expanded="false" aria-controls="summary-detail">
+        <span>
+          <span class="block eyebrow">Resumen del pedido</span>
+          <span class="block font-display text-[1.1rem] mt-1"><span data-summary-count>0</span> fragancia(s) seleccionada(s)</span>
+        </span>
+        <span class="flex items-center gap-3 shrink-0">
+          <span data-summary-total class="font-display text-[1.4rem]">{formatPrice(0)}</span>
+          <Icon name="arrow-down" size={14} class="opacity-60 transition-transform duration-200" data-summary-chevron />
+        </span>
+      </button>
+
+      <div id="summary-detail" data-summary-detail hidden class="px-5 pb-5 border-t border-sand pt-4 space-y-2.5 text-meta">
+        <div class="flex justify-between"><span class="text-taupe-deep">Subtotal</span><span data-summary-subtotal>{formatPrice(0)}</span></div>
+        <div data-summary-discount-row hidden class="flex justify-between text-caramel-deep">
+          <span data-summary-discount-label>Descuento bundle</span><span data-summary-discount>-{formatPrice(0)}</span>
+        </div>
+        <div class="flex justify-between"><span class="text-taupe-deep">Envío</span><span data-summary-shipping>A coordinar</span></div>
+        <div class="flex justify-between font-display text-[1.05rem] pt-2 border-t border-sand"><span>Total</span><span data-summary-final>{formatPrice(0)}</span></div>
+      </div>
+
+      <div class="px-5 pb-5 pt-1">
+        <a data-bundle-wa href="#" target="_blank" rel="noopener" class="btn btn--wa w-full" aria-disabled="true">
+          <Icon name="whatsapp" size={18} />
+          Ordenar por WhatsApp
+        </a>
+        <p class="mt-3 text-[0.75rem] leading-relaxed text-taupe-deep">
+          El pedido se coordina y confirma por WhatsApp con RIVÂRE. No se procesan pagos en el sitio.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Picker -->
+  <section class="bg-ivory u-section">
+    <div class="u-shell">
+      <p class="eyebrow reveal">Elegí tus fragancias</p>
+      <h2 class="reveal mt-4 font-display text-display-md">Hasta {MAX_BUNDLE_SLOTS} en tu bundle</h2>
+
+      <div class="reveal mt-8 flex flex-wrap gap-x-6 gap-y-2 text-meta uppercase tracking-[0.16em] border-b border-sand-deep/40 pb-5" role="tablist" aria-label="Filtrar fragancias">
+        {pickerFilters.map((slug, i) => (
+          <button
+            type="button"
+            data-filter={slug}
+            aria-pressed={i === 0 ? 'true' : 'false'}
+            class:list={[
+              'pb-1 border-b transition-colors',
+              i === 0 ? 'border-caramel-deep text-ink' : 'border-transparent text-taupe-deep hover:text-ink',
+            ]}
+          >
+            {COLLECTIONS[slug].label}
+          </button>
+        ))}
+      </div>
+
+      <div data-bundle-grid class="mt-10 grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3 lg:grid-cols-4 md:gap-x-6">
+        {catalog.map((p) => (
+          <article data-picker-card data-slug={p.slug} data-category={p.category} data-bestseller={String(products.find((x) => x.slug === p.slug)?.bestseller ?? false)} class="group">
+            <div class="zoom-frame relative bg-ivory aspect-[3/4]">
+              <img src={p.thumb} alt={`Frasco de ${p.name}, Eau de Parfum RIVÂRE`} width="320" height="400" loading="lazy" class="w-full h-full object-cover" />
+              <span class="absolute left-3 top-3 text-[0.65rem] uppercase tracking-[0.18em] text-taupe-deep bg-paper/85 px-2 py-1">
+                {CATEGORY_LABEL[p.category]}
+              </span>
+            </div>
+            <div class="pt-4">
+              <h3 class="font-display text-[1.4rem] leading-tight">{p.name}</h3>
+              <p class="mt-1 font-display italic text-[0.95rem] text-taupe-deep">Inspirado en {p.inspiredBy}</p>
+              <p class="mt-2 text-[0.7rem] uppercase tracking-[0.13em] text-taupe-deep">{formatPrice(p.priceHnl)} · 50 ml</p>
+            </div>
+            <button type="button" data-picker-toggle class="btn btn--ghost w-full mt-3">
+              <Icon name="plus" size={15} data-picker-icon />
+              <span data-picker-label>Agregar al bundle</span>
+            </button>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script type="application/json" id="rivare-bundle-catalog" set:html={JSON.stringify(catalog)}></script>
+
+<script>
+  import { readBundle, toggleBundle, removeFromBundle, onBundleChange, getBundlePricing } from '@/lib/bundle';
+  import { waLink, bundleOrderText } from '@/lib/whatsapp';
+  import { formatPrice } from '@/lib/format';
+
+  interface CatalogItem {
+    slug: string;
+    name: string;
+    inspiredBy: string;
+    category: string;
+    thumb: string;
+    priceHnl: number | null;
+  }
+
+  function catalog(): Record<string, CatalogItem> {
+    const el = document.getElementById('rivare-bundle-catalog');
+    const arr: CatalogItem[] = el ? JSON.parse(el.textContent || '[]') : [];
+    return Object.fromEntries(arr.map((i) => [i.slug, i]));
+  }
+
+  function render(slugs: string[]) {
+    const items = catalog();
+    const selected = slugs.filter((s) => items[s]);
+    const pricing = getBundlePricing(selected.length);
+
+    // Slots
+    document.querySelectorAll<HTMLLIElement>('[data-slot]').forEach((li) => {
+      const n = Number(li.dataset.slot);
+      const slug = selected[n - 1];
+      const empty = li.querySelector<HTMLElement>('[data-slot-empty]');
+      const filled = li.querySelector<HTMLElement>('[data-slot-filled]');
+      const img = li.querySelector<HTMLImageElement>('[data-slot-img]');
+      const nameEl = li.querySelector<HTMLElement>('[data-slot-name]');
+      li.classList.toggle('border-solid', Boolean(slug));
+      li.classList.toggle('border-caramel-deep', Boolean(slug));
+      li.classList.toggle('border-dashed', !slug);
+      if (slug) {
+        const p = items[slug];
+        empty && (empty.hidden = true);
+        if (filled) filled.hidden = false;
+        if (img) img.src = p.thumb;
+        if (nameEl) nameEl.textContent = p.name;
+        (li.querySelector('[data-slot-remove]') as HTMLButtonElement | null)?.setAttribute('data-slug', slug);
+      } else {
+        empty && (empty.hidden = false);
+        if (filled) filled.hidden = true;
+      }
+    });
+
+    // Milestone strip
+    document.querySelectorAll<HTMLElement>('[data-milestone]').forEach((el) => {
+      const count = Number(el.dataset.milestone);
+      const unlocked = selected.length >= count;
+      el.classList.toggle('bg-espresso', unlocked);
+      const icon = el.querySelector<HTMLElement>('[data-milestone-icon]');
+      icon?.classList.toggle('bg-caramel', unlocked);
+      icon?.classList.toggle('border-caramel', unlocked);
+      icon?.classList.toggle('text-espresso', unlocked);
+      icon?.classList.toggle('text-taupe-deep', !unlocked);
+      el.querySelectorAll<HTMLElement>('[data-milestone-text]').forEach((t) => {
+        t.classList.toggle('text-ivory', unlocked);
+      });
+    });
+
+    // Hint
+    const hint = document.querySelector<HTMLElement>('[data-slot-hint]');
+    if (hint) {
+      if (selected.length === 0) {
+        hint.textContent = 'Elegí tu primera fragancia para empezar.';
+      } else if (pricing.nextMilestone) {
+        const word = pricing.remainingToNext === 1 ? 'fragancia más' : 'fragancias más';
+        hint.textContent = `Agregá ${pricing.remainingToNext} ${word} para desbloquear ${pricing.nextMilestone.label.toLowerCase()}.`;
+      } else {
+        hint.textContent = '¡Desbloqueaste el máximo descuento: 20% OFF + envío gratis!';
+      }
+    }
+
+    // Summary
+    const countEl = document.querySelector('[data-summary-count]');
+    if (countEl) countEl.textContent = String(selected.length);
+    const totalEl = document.querySelector('[data-summary-total]');
+    if (totalEl) totalEl.textContent = formatPrice(pricing.total);
+    const subtotalEl = document.querySelector('[data-summary-subtotal]');
+    if (subtotalEl) subtotalEl.textContent = formatPrice(pricing.subtotal);
+    const finalEl = document.querySelector('[data-summary-final]');
+    if (finalEl) finalEl.textContent = formatPrice(pricing.total);
+    const shippingEl = document.querySelector('[data-summary-shipping]');
+    if (shippingEl) shippingEl.textContent = pricing.freeShipping ? 'GRATIS' : 'A coordinar';
+    const discountRow = document.querySelector<HTMLElement>('[data-summary-discount-row]');
+    if (discountRow) discountRow.hidden = pricing.discountPct === 0;
+    const discountLabel = document.querySelector('[data-summary-discount-label]');
+    if (discountLabel) discountLabel.textContent = `Descuento bundle (${pricing.discountPct}%)`;
+    const discountEl = document.querySelector('[data-summary-discount]');
+    if (discountEl) discountEl.textContent = `-${formatPrice(pricing.discountAmount)}`;
+
+    // WhatsApp CTA
+    const waEl = document.querySelector<HTMLAnchorElement>('[data-bundle-wa]');
+    if (waEl) {
+      const names = selected.map((s) => items[s].name);
+      waEl.href = waLink(bundleOrderText(names, pricing));
+      const disabled = selected.length === 0;
+      waEl.setAttribute('aria-disabled', String(disabled));
+      waEl.classList.toggle('pointer-events-none', disabled);
+      waEl.classList.toggle('opacity-40', disabled);
+    }
+
+    // Picker cards
+    document.querySelectorAll<HTMLElement>('[data-picker-card]').forEach((card) => {
+      const slug = card.dataset.slug!;
+      const isIn = selected.includes(slug);
+      const label = card.querySelector('[data-picker-label]');
+      const btn = card.querySelector<HTMLButtonElement>('[data-picker-toggle]');
+      if (label) label.textContent = isIn ? 'En tu bundle · Quitar' : 'Agregar al bundle';
+      btn?.classList.toggle('btn--ghost', !isIn);
+      const full = !isIn && selected.length >= 9;
+      btn?.toggleAttribute('disabled', full);
+      btn?.classList.toggle('opacity-40', full);
+      btn?.classList.toggle('pointer-events-none', full);
+    });
+  }
+
+  function applyFilter(filter: string) {
+    document.querySelectorAll<HTMLElement>('[data-picker-card]').forEach((card) => {
+      const matches =
+        filter === 'all' ||
+        (filter === 'bestsellers' ? card.dataset.bestseller === 'true' : card.dataset.category === filter);
+      card.hidden = !matches;
+    });
+    document.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((btn) => {
+      const active = btn.dataset.filter === filter;
+      btn.setAttribute('aria-pressed', String(active));
+      btn.classList.toggle('border-caramel-deep', active);
+      btn.classList.toggle('text-ink', active);
+      btn.classList.toggle('border-transparent', !active);
+      btn.classList.toggle('text-taupe-deep', !active);
+    });
+  }
+
+  if (!(window as any).__rivareBundle) {
+    (window as any).__rivareBundle = true;
+
+    document.addEventListener('click', (e) => {
+      const el = e.target as HTMLElement;
+      const filterBtn = el.closest<HTMLButtonElement>('[data-filter]');
+      if (filterBtn) return applyFilter(filterBtn.dataset.filter!);
+
+      const toggleBtn = el.closest('[data-picker-toggle]');
+      if (toggleBtn) {
+        const slug = toggleBtn.closest<HTMLElement>('[data-picker-card]')?.dataset.slug;
+        if (slug) toggleBundle(slug);
+        return;
+      }
+
+      const removeBtn = el.closest<HTMLButtonElement>('[data-slot-remove]');
+      if (removeBtn) {
+        const slug = removeBtn.dataset.slug;
+        if (slug) removeFromBundle(slug);
+        return;
+      }
+
+      const summaryToggle = el.closest('[data-summary-toggle]');
+      if (summaryToggle) {
+        const detail = document.querySelector<HTMLElement>('[data-summary-detail]');
+        const chevron = document.querySelector<HTMLElement>('[data-summary-chevron]');
+        if (detail) {
+          const next = detail.hidden;
+          detail.hidden = !next;
+          summaryToggle.setAttribute('aria-expanded', String(next));
+          chevron?.classList.toggle('rotate-180', next);
+        }
+      }
+    });
+
+    onBundleChange(render);
+  }
+
+  render(readBundle());
+  applyFilter('all');
+  document.addEventListener('astro:page-load', () => {
+    render(readBundle());
+  });
+</script>

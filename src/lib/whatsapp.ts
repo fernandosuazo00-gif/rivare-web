@@ -62,4 +62,34 @@ export function cartOrderText(lines: CartOrderLine[]): string {
   ].join('\n');
 }
 
+export interface BundlePricingSummary {
+  subtotal: number;
+  discountPct: number;
+  discountAmount: number;
+  total: number;
+  freeShipping: boolean;
+}
+
+/** Message for "Ordenar por WhatsApp" from the Make a Bundle page. */
+export function bundleOrderText(names: string[], pricing: BundlePricingSummary): string {
+  if (names.length === 0) {
+    return 'Hola RIVÂRE 👋 Quiero armar un bundle de fragancias. ¿Me pueden ayudar?';
+  }
+  const items = names.map((n) => `• ${n} ×1 — ${formatPrice(600)}`);
+  const lines = [
+    'Hola RIVÂRE 👋 Quiero ordenar este bundle:',
+    '',
+    ...items,
+    '',
+    `Subtotal: ${formatPrice(pricing.subtotal)}`,
+  ];
+  if (pricing.discountPct > 0) {
+    lines.push(`Descuento bundle (${pricing.discountPct}%): -${formatPrice(pricing.discountAmount)}`);
+  }
+  lines.push(`Envío: ${pricing.freeShipping ? 'GRATIS' : 'A coordinar'}`);
+  lines.push(`TOTAL: ${formatPrice(pricing.total)}`);
+  lines.push('', '¿Me pueden confirmar disponibilidad?');
+  return lines.join('\n');
+}
+
 export const GENERIC_WA_TEXT = 'Hola RIVÂRE 👋 Quisiera más información sobre sus fragancias.';

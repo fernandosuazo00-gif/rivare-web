@@ -35,7 +35,7 @@
     scroll-behavior: smooth;
     scrollbar-gutter: stable;
     overflow-x: clip;
-    scroll-padding-top: 6rem;
+    scroll-padding-top: 7.5rem;
   }
 
   @keyframes marquee {
@@ -197,6 +197,18 @@
     --btn-bg: var(--ivory);
     --btn-fg: var(--espresso);
     border-color: var(--ivory);
+  }
+  /* Solid primary button inverts on dark sections so it stays visible
+     (espresso-on-espresso would otherwise disappear). */
+  .is-dark .btn:not(.btn--ghost):not(.btn--wa) {
+    --btn-bg: var(--ivory);
+    --btn-fg: var(--espresso);
+    border-color: var(--ivory);
+  }
+  .is-dark .btn:not(.btn--ghost):not(.btn--wa):hover {
+    --btn-bg: var(--caramel);
+    --btn-fg: var(--espresso);
+    border-color: var(--caramel);
   }
   .btn--wa {
     --btn-bg: #1d7d63;

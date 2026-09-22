@@ -1,13 +1,15 @@
 import type { ImageMetadata } from 'astro';
-import type { CategorySlug } from './site';
+import type { CategorySlug, CollectionSlug } from './site';
 
 import amber from '@/assets/products/amber.jpeg';
 import azure from '@/assets/products/azure.jpeg';
 import bianco from '@/assets/products/bianco.jpeg';
+import blue from '@/assets/products/blue.jpeg';
 import bloom from '@/assets/products/bloom.jpeg';
 import cielo from '@/assets/products/cielo.jpeg';
 import diva from '@/assets/products/diva.jpeg';
 import donna from '@/assets/products/donna.jpeg';
+import forte from '@/assets/products/forte.jpeg';
 import libre from '@/assets/products/libre.jpeg';
 import lumen from '@/assets/products/lumen.jpeg';
 import nomada from '@/assets/products/nomada.jpeg';
@@ -25,6 +27,10 @@ export interface Product {
   /** Casa original de esa fragancia (solo referencia — RIVÂRE es independiente). */
   house: string;
   category: CategorySlug;
+  /** Colección "Bestsellers" — subset curado para mercadeo, sin cifras inventadas. */
+  bestseller?: boolean;
+  /** Colección "Novedades" — recién incorporado al catálogo. */
+  isNew?: boolean;
   /** Familia olfativa de la fragancia que inspira. */
   family: string;
   /** Frase editorial breve del carácter del aroma. */
@@ -56,6 +62,7 @@ export const products: Product[] = [
     inspiredBy: 'Baccarat Rouge 540',
     house: 'Maison Francis Kurkdjian',
     category: 'unisex',
+    bestseller: true,
     family: 'Ambarada floral',
     character: 'Luminoso y mineral, con un dulzor de azafrán y madera ámbar que se queda en la piel.',
     use: 'Firma diaria · de día a noche',
@@ -72,7 +79,8 @@ export const products: Product[] = [
     name: 'Azure',
     inspiredBy: 'Sauvage',
     house: 'Dior',
-    category: 'para-hombre',
+    category: 'hombre',
+    bestseller: true,
     family: 'Aromática fresca',
     character: 'Bergamota radiante y pimienta sobre un fondo de ambroxan mineral. Limpio y expansivo.',
     use: 'Diario · oficina · clima cálido',
@@ -89,7 +97,7 @@ export const products: Product[] = [
     name: 'Bianco',
     inspiredBy: 'Silver Mountain Water',
     house: 'Creed',
-    category: 'para-hombre',
+    category: 'unisex',
     family: 'Cítrica verde almizclada',
     character: 'Aire de montaña: té verde, grosella y un almizcle transparente. Fresco y elegante.',
     use: 'Diario · primavera y verano',
@@ -102,11 +110,31 @@ export const products: Product[] = [
     priceHnl: 600,
   },
   {
+    slug: 'blue',
+    name: 'Blue',
+    inspiredBy: 'Bleu de Chanel',
+    house: 'Chanel',
+    category: 'hombre',
+    bestseller: true,
+    isNew: true,
+    family: 'Aromática amaderada',
+    character: 'Un estallido cítrico de toronja y menta sobre un corazón amaderado y un fondo de incienso. Limpio, versátil, atemporal.',
+    use: 'Diario · oficina · todo el año',
+    notes: {
+      top: ['Toronja', 'Limón', 'Menta', 'Pimienta rosa'],
+      heart: ['Jengibre', 'Nuez moscada', 'Jazmín'],
+      base: ['Incienso', 'Vetiver', 'Cedro', 'Sándalo'],
+    },
+    image: blue,
+    priceHnl: 600,
+  },
+  {
     slug: 'bloom',
     name: 'Bloom',
     inspiredBy: 'Flowerbomb',
     house: 'Viktor & Rolf',
-    category: 'para-mujer',
+    category: 'mujer',
+    bestseller: true,
     family: 'Floral oriental',
     character: 'Un ramo que explota en dulce: jazmín, orquídea y rosa sobre pachulí y almizcle.',
     use: 'Noche · ocasión',
@@ -123,7 +151,7 @@ export const products: Product[] = [
     name: 'Cielo',
     inspiredBy: 'Erba Pura',
     house: 'Xerjoff',
-    category: 'unisex',
+    category: 'mujer',
     family: 'Frutal cítrica ambarada',
     character: 'Naranja de Sicilia y frutas jugosas sobre un fondo de ámbar y vainilla. Adictivo y solar.',
     use: 'Diario · todo el año',
@@ -140,7 +168,8 @@ export const products: Product[] = [
     name: 'Diva',
     inspiredBy: 'Good Girl',
     house: 'Carolina Herrera',
-    category: 'para-mujer',
+    category: 'mujer',
+    bestseller: true,
     family: 'Floral oriental amaderada',
     character: 'El contraste entre café y almendra con nardo y cacao. Sensual y con carácter.',
     use: 'Noche · otoño e invierno',
@@ -157,7 +186,7 @@ export const products: Product[] = [
     name: 'Donna',
     inspiredBy: 'Born in Roma Donna',
     house: 'Valentino',
-    category: 'para-mujer',
+    category: 'mujer',
     family: 'Floral ambarada',
     character: 'Jazmín grandiflorum envuelto en vainilla bourbon y madera guayaco. Moderno y cálido.',
     use: 'Diario · noche',
@@ -170,11 +199,30 @@ export const products: Product[] = [
     priceHnl: 600,
   },
   {
+    slug: 'forte',
+    name: 'Forte',
+    inspiredBy: 'Aventus',
+    house: 'Creed',
+    category: 'hombre',
+    bestseller: true,
+    isNew: true,
+    family: 'Amaderada afrutada',
+    character: 'Piña y grosella negra sobre un corazón de abedul y un fondo de musgo y ámbar. Potente, magnético, de ocasión.',
+    use: 'Noche · ocasión · estatus',
+    notes: {
+      top: ['Piña', 'Bergamota', 'Grosella negra', 'Manzana'],
+      heart: ['Abedul', 'Pachulí', 'Rosa', 'Jazmín'],
+      base: ['Almizcle', 'Musgo de roble', 'Vetiver', 'Ámbar'],
+    },
+    image: forte,
+    priceHnl: 600,
+  },
+  {
     slug: 'libre',
     name: 'Libre',
     inspiredBy: 'Libre',
     house: 'Yves Saint Laurent',
-    category: 'para-mujer',
+    category: 'mujer',
     family: 'Floral aromática',
     character: 'La tensión entre lavanda y flor de azahar, resuelta en vainilla y almizcle.',
     use: 'Diario · noche',
@@ -191,7 +239,7 @@ export const products: Product[] = [
     name: 'Lumen',
     inspiredBy: 'Imagination',
     house: 'Louis Vuitton',
-    category: 'para-hombre',
+    category: 'hombre',
     family: 'Cítrica aromática amaderada',
     character: 'Bergamota y jengibre sobre té negro y maderas claras. Nítido, brillante, energético.',
     use: 'Diario · oficina',
@@ -208,7 +256,7 @@ export const products: Product[] = [
     name: 'Nomada',
     inspiredBy: 'Ombre Nomade',
     house: 'Louis Vuitton',
-    category: 'para-hombre',
+    category: 'hombre',
     family: 'Amaderada oriental (oud)',
     character: 'Oud, incienso y abedul ahumado con un toque de frambuesa. Resinoso e intenso.',
     use: 'Noche · ocasión · invierno',
@@ -225,7 +273,7 @@ export const products: Product[] = [
     name: 'Ombre',
     inspiredBy: 'Ombré Leather',
     house: 'Tom Ford',
-    category: 'unisex',
+    category: 'hombre',
     family: 'Cuero ambarada',
     character: 'Cuero crudo y ante con jazmín sambac sobre ámbar y pachulí. Terroso y cálido.',
     use: 'Noche · todo el año',
@@ -242,7 +290,8 @@ export const products: Product[] = [
     name: 'Rosé',
     inspiredBy: 'Delina',
     house: 'Parfums de Marly',
-    category: 'para-mujer',
+    category: 'mujer',
+    bestseller: true,
     family: 'Floral frutal',
     character: 'Rosa turca con lichi y ruibarbo sobre vainilla e incienso. Como champagne rosado.',
     use: 'Diario · ocasión',
@@ -259,7 +308,7 @@ export const products: Product[] = [
     name: 'Royale',
     inspiredBy: 'Layton',
     house: 'Parfums de Marly',
-    category: 'para-hombre',
+    category: 'hombre',
     family: 'Aromática ambarada',
     character: 'Manzana y lavanda con un corazón floral especiado sobre vainilla y sándalo. Muy versátil.',
     use: 'Diario · noche · todo el año',
@@ -277,6 +326,7 @@ export const products: Product[] = [
     inspiredBy: 'Santal 33',
     house: 'Le Labo',
     category: 'unisex',
+    bestseller: true,
     family: 'Amaderada aromática',
     character: 'Sándalo seco, papiro y un cuero ahumado con iris y violeta. Una firma unisex reconocible.',
     use: 'Firma diaria · todo el año',
@@ -293,7 +343,7 @@ export const products: Product[] = [
     name: 'Uomo',
     inspiredBy: 'Born in Roma Uomo',
     house: 'Valentino',
-    category: 'para-hombre',
+    category: 'hombre',
     family: 'Aromática amaderada',
     character: 'Frescor de enebro y salvia sobre vetiver mineral y un fondo de vainilla bourbon.',
     use: 'Diario · oficina · noche',
@@ -313,9 +363,25 @@ export const productBySlug = (slug: string): Product | undefined =>
 export const productsByCategory = (category: CategorySlug): Product[] =>
   products.filter((p) => p.category === category);
 
-export const categoryCounts = {
+/** Resolve any shoppable collection (gender or curated) to its product list. */
+export function productsByCollection(slug: CollectionSlug): Product[] {
+  switch (slug) {
+    case 'all':
+      return products;
+    case 'bestsellers':
+      return products.filter((p) => p.bestseller);
+    case 'novedades':
+      return products.filter((p) => p.isNew);
+    default:
+      return productsByCategory(slug);
+  }
+}
+
+export const collectionCounts: Record<CollectionSlug, number> = {
   all: products.length,
-  'para-hombre': productsByCategory('para-hombre').length,
-  'para-mujer': productsByCategory('para-mujer').length,
+  bestsellers: productsByCollection('bestsellers').length,
+  novedades: productsByCollection('novedades').length,
+  hombre: productsByCategory('hombre').length,
+  mujer: productsByCategory('mujer').length,
   unisex: productsByCategory('unisex').length,
 };

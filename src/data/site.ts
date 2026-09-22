@@ -11,6 +11,8 @@ export const SITE = {
   legalName: 'RIVÂRE',
   tagline: 'Una perfumería hecha en Honduras.',
   brandLine: 'Fragancias · inspiradas en los grandes · creadas para quedarse.',
+  /** Shorter variant for tight spaces (mobile announcement bar). */
+  brandLineShort: 'Eau de Parfum · Hecho en Honduras',
   description:
     'RIVÂRE es una perfumería hondureña de Eau de Parfum inspirada en las fragancias más reconocidas del mundo. Hecho en Honduras, en tu ciudad, a tu precio.',
   locality: 'Tegucigalpa',
@@ -41,25 +43,73 @@ export const SITE = {
   currencySymbol: 'L',
 } as const;
 
-export const NAV: { label: string; href: string }[] = [
-  { label: 'Inicio', href: '/' },
-  { label: 'Perfumes', href: '/perfumes' },
-  { label: 'Fragancias a medida', href: '/fragancias-a-medida' },
-  { label: 'Nosotros', href: '/nosotros' },
-];
-
-/** The shop / collection menu required by the brief. */
-export const COLLECTION_NAV: { label: string; href: string; slug: CategorySlug | 'all' }[] = [
-  { label: 'Ver todos', href: '/perfumes', slug: 'all' },
-  { label: 'Para hombre', href: '/perfumes/para-hombre', slug: 'para-hombre' },
-  { label: 'Para mujer', href: '/perfumes/para-mujer', slug: 'para-mujer' },
-  { label: 'Unisex', href: '/perfumes/unisex', slug: 'unisex' },
-];
-
-export type CategorySlug = 'para-hombre' | 'para-mujer' | 'unisex';
+/** Gender / assortment slug used by product data, routes and filters. */
+export type CategorySlug = 'hombre' | 'mujer' | 'unisex';
 
 export const CATEGORY_LABEL: Record<CategorySlug, string> = {
-  'para-hombre': 'Para hombre',
-  'para-mujer': 'Para mujer',
+  hombre: 'Hombre',
+  mujer: 'Mujer',
   unisex: 'Unisex',
 };
+
+/** Every shoppable collection, gender-based or curated. */
+export type CollectionSlug = 'all' | 'bestsellers' | 'novedades' | CategorySlug;
+
+export const COLLECTIONS: Record<CollectionSlug, { label: string; href: string }> = {
+  all: { label: 'Ver todo', href: '/perfumes' },
+  bestsellers: { label: 'Bestsellers', href: '/perfumes/bestsellers' },
+  novedades: { label: 'Novedades', href: '/perfumes/novedades' },
+  hombre: { label: 'Hombre', href: '/perfumes/hombre' },
+  mujer: { label: 'Mujer', href: '/perfumes/mujer' },
+  unisex: { label: 'Unisex', href: '/perfumes/unisex' },
+};
+
+/** Quick filter/tab order used on collection pages and the bundle picker. */
+export const COLLECTION_TABS: CollectionSlug[] = ['all', 'bestsellers', 'hombre', 'mujer', 'unisex'];
+
+export interface NavLink {
+  label: string;
+  href: string;
+}
+export interface NavGroup {
+  label: string;
+  href?: string;
+  items: NavLink[];
+}
+
+/** Header + mobile drawer navigation, grouped per the site IA. */
+export const NAV_GROUPS: NavGroup[] = [
+  {
+    label: 'Perfumes',
+    href: '/perfumes',
+    items: [
+      { label: 'Ver todo el catálogo', href: '/perfumes' },
+      { label: 'Bestsellers', href: '/perfumes/bestsellers' },
+      { label: 'Novedades', href: '/perfumes/novedades' },
+    ],
+  },
+  {
+    label: 'Comprar por género',
+    items: [
+      { label: 'Mujer', href: '/perfumes/mujer' },
+      { label: 'Hombre', href: '/perfumes/hombre' },
+      { label: 'Unisex', href: '/perfumes/unisex' },
+    ],
+  },
+  {
+    label: 'Más formas de comprar',
+    items: [{ label: 'Armá tu bundle', href: '/bundle' }],
+  },
+  {
+    label: 'RIVÂRE',
+    items: [
+      { label: 'Nosotros', href: '/nosotros' },
+      { label: 'Fragancias a medida', href: '/fragancias-a-medida' },
+      { label: 'Contacto', href: '/contacto' },
+      { label: 'Preguntas frecuentes', href: '/faq' },
+    ],
+  },
+];
+
+/** Flat link list for the footer's "RIVÂRE" column. */
+export const FOOTER_ABOUT_LINKS: NavLink[] = NAV_GROUPS[3].items;
