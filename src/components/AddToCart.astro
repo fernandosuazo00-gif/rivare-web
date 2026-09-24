@@ -3,15 +3,20 @@ import Icon from '@/components/Icon.astro';
 
 interface Props {
   slug: string;
-  /** 'full' = primary button with qty stepper (product page); 'compact' = single button (cards) */
-  variant?: 'full' | 'compact';
+  /** 'full' = primary button with qty stepper (product page); 'compact' = single button (cards);
+   *  'catalog' = full-width solid pill, no icon (catalog listing cards) */
+  variant?: 'full' | 'compact' | 'catalog';
   label?: string;
   class?: string;
 }
 const { slug, variant = 'compact', label = 'Agregar', class: className } = Astro.props;
 ---
 
-{variant === 'full' ? (
+{variant === 'catalog' ? (
+  <button type="button" data-add-btn data-slug={slug} class:list={['btn w-full rounded-full', className]}>
+    <span data-add-label>{label}</span>
+  </button>
+) : variant === 'full' ? (
   <div class:list={['flex flex-col sm:flex-row gap-3', className]} data-add-root>
     <div class="inline-flex items-center border border-espresso h-12 self-start">
       <button type="button" data-qty-dec class="w-11 h-full grid place-items-center hover:bg-ivory transition-colors" aria-label="Menos">

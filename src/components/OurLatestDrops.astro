@@ -1,0 +1,215 @@
+---
+import { Image } from 'astro:assets';
+import Icon from '@/components/Icon.astro';
+import { productBySlug } from '@/data/products';
+import { formatPrice } from '@/lib/format';
+import divaDrop from '@/assets/drops/diva-drop.jpg';
+import ombreDrop from '@/assets/drops/ombre-drop.jpg';
+import libreDrop from '@/assets/drops/libre-drop.jpg';
+import donnaDrop from '@/assets/drops/donna-drop.jpg';
+import bloomDrop from '@/assets/drops/bloom-drop.jpg';
+
+const slots = [
+  { slug: 'diva', image: divaDrop, position: 'object-[62%_55%]' },
+  { slug: 'ombre', image: ombreDrop, position: 'object-[50%_38%]' },
+  { slug: 'libre', image: libreDrop, position: 'object-[55%_45%]' },
+  { slug: 'donna', image: donnaDrop, position: 'object-[50%_45%]' },
+  { slug: 'bloom', image: bloomDrop, position: 'object-[50%_55%]' },
+] as const;
+
+const drops = slots.map((slot) => {
+  const product = productBySlug(slot.slug);
+  if (!product) throw new Error(`OurLatestDrops: no product found for slug "${slot.slug}"`);
+  return { ...slot, name: product.name, priceHnl: product.priceHnl };
+});
+---
+
+<section class="u-section !pb-12 sm:!pb-14" aria-labelledby="drops-title">
+  <div class="u-shell">
+    <h2 id="drops-title" class="reveal font-display text-display-lg">Our latest drops</h2>
+  </div>
+
+  <div class="mt-8 sm:mt-10">
+    <div
+      data-drops-track
+      class="drops-track flex gap-4 sm:gap-5 md:gap-6 overflow-x-auto snap-x snap-mandatory -mx-gutter px-gutter scroll-px-gutter"
+    >
+      {drops.map((drop, i) => (
+        <div
+          class="reveal shrink-0 snap-start w-[56vw] sm:w-[46vw] md:w-[38vw] lg:w-[29vw] xl:w-[26vw] 2xl:w-[23vw]"
+          style={`--reveal-delay:${i * 80}ms`}
+          data-drop-slide
+        >
+          <div class="group relative aspect-[3/4] rounded-2xl overflow-hidden bg-espresso">
+            <Image
+              src={drop.image}
+              alt={`${drop.name} — RIVÂRE`}
+              widths={[360, 520, 720]}
+              sizes="(min-width:1024px) 28vw, 58vw"
+              loading={i < 2 ? 'eager' : 'lazy'}
+              class:list={[
+                'w-full h-full object-cover transition-transform duration-700 ease-editorial lg:group-hover:scale-105',
+                drop.position,
+              ]}
+            />
+            <div
+              class="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-espresso/85 via-espresso/15 to-transparent pointer-events-none"
+              aria-hidden="true"
+            >
+            </div>
+
+            <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+              <p class="font-display font-light text-ivory text-[1.3rem] sm:text-[1.5rem] leading-none mb-3 sm:mb-4">
+                {drop.name}
+              </p>
+              <button
+                type="button"
+                data-drop-add
+                data-slug={drop.slug}
+                class="w-full inline-flex items-center justify-between gap-1.5 sm:gap-2 rounded-full bg-ivory pl-4 sm:pl-5 pr-1.5 h-11 sm:h-12 text-espresso transition-colors hover:bg-caramel"
+              >
+                <span data-drop-add-label class="whitespace-nowrap text-[0.66rem] sm:text-[0.75rem] uppercase tracking-[0.06em] sm:tracking-[0.1em] font-medium">
+                  Add to cart
+                </span>
+                <span class="inline-flex items-center justify-center rounded-full bg-espresso text-ivory h-8 sm:h-9 px-3 sm:px-4 text-[0.68rem] sm:text-[0.7rem] tabular-nums tracking-[0.02em] shrink-0 whitespace-nowrap">
+                  {formatPrice(drop.priceHnl)}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="mt-6 sm:mt-8 flex items-center justify-center gap-4 sm:gap-5">
+    <button
+      type="button"
+      data-drops-prev
+      aria-label="Drop anterior"
+      class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-sand text-ink hover:border-espresso transition-colors disabled:opacity-30 disabled:pointer-events-none"
+    >
+      <Icon name="chevron-left" size={16} />
+    </button>
+    <div class="flex items-center gap-2" role="tablist" aria-label="Seleccionar drop">
+      {drops.map((drop, i) => (
+        <button
+          type="button"
+          data-drops-dot
+          data-index={i}
+          role="tab"
+          aria-label={`Ver ${drop.name}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          data-active={i === 0 ? 'true' : 'false'}
+          class="h-2 w-2 rounded-full bg-sand transition-all data-[active=true]:bg-espresso data-[active=true]:w-2.5 data-[active=true]:h-2.5"
+        />
+      ))}
+    </div>
+    <button
+      type="button"
+      data-drops-next
+      aria-label="Siguiente drop"
+      class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-sand text-ink hover:border-espresso transition-colors disabled:opacity-30 disabled:pointer-events-none"
+    >
+      <Icon name="chevron-right" size={16} />
+    </button>
+  </div>
+</section>
+
+<style>
+  .drops-track {
+    scrollbar-width: none;
+  }
+  .drops-track::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
+<script>
+  import { addToCart } from '@/lib/cart';
+
+  function initDrops() {
+    const section = document.querySelector<HTMLElement>('[data-drops-track]')?.closest('section');
+    if (!section || section.dataset.dropsBound) return;
+    section.dataset.dropsBound = '1';
+
+    const track = section.querySelector<HTMLElement>('[data-drops-track]');
+    const slides = Array.from(section.querySelectorAll<HTMLElement>('[data-drop-slide]'));
+    const dots = Array.from(section.querySelectorAll<HTMLButtonElement>('[data-drops-dot]'));
+    const prevBtn = section.querySelector<HTMLButtonElement>('[data-drops-prev]');
+    const nextBtn = section.querySelector<HTMLButtonElement>('[data-drops-next]');
+    if (!track || !slides.length) return;
+
+    let active = 0;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function setActive(index: number) {
+      active = Math.max(0, Math.min(slides.length - 1, index));
+      dots.forEach((dot, i) => {
+        const isActive = i === active;
+        dot.dataset.active = String(isActive);
+        dot.setAttribute('aria-selected', String(isActive));
+      });
+      if (prevBtn) prevBtn.disabled = active === 0;
+      if (nextBtn) nextBtn.disabled = active === slides.length - 1;
+    }
+
+    function scrollToSlide(index: number, behavior: ScrollBehavior = reduced ? 'auto' : 'smooth') {
+      const slide = slides[Math.max(0, Math.min(slides.length - 1, index))];
+      if (!slide || !track) return;
+      track.scrollTo({ left: slide.offsetLeft, behavior });
+    }
+
+    // Keep the active dot in sync while the visitor swipes/scrolls.
+    let raf = 0;
+    track.addEventListener(
+      'scroll',
+      () => {
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          raf = 0;
+          const center = track.scrollLeft + track.clientWidth / 2;
+          let closest = 0;
+          let closestDist = Infinity;
+          slides.forEach((slide, i) => {
+            const slideCenter = slide.offsetLeft + slide.offsetWidth / 2;
+            const dist = Math.abs(slideCenter - center);
+            if (dist < closestDist) {
+              closestDist = dist;
+              closest = i;
+            }
+          });
+          if (closest !== active) setActive(closest);
+        });
+      },
+      { passive: true },
+    );
+
+    prevBtn?.addEventListener('click', () => scrollToSlide(active - 1));
+    nextBtn?.addEventListener('click', () => scrollToSlide(active + 1));
+    dots.forEach((dot, i) => dot.addEventListener('click', () => scrollToSlide(i)));
+
+    section.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-drop-add]');
+      if (!btn || !btn.dataset.slug) return;
+      addToCart(btn.dataset.slug, 1);
+
+      const label = btn.querySelector('[data-drop-add-label]');
+      if (label && !btn.dataset.busy) {
+        btn.dataset.busy = '1';
+        const prev = label.textContent;
+        label.textContent = 'Agregado ✓';
+        window.setTimeout(() => {
+          label.textContent = prev;
+          delete btn.dataset.busy;
+        }, 1400);
+      }
+      window.dispatchEvent(new CustomEvent('rivare:cart-added'));
+    });
+
+    setActive(0);
+  }
+
+  initDrops();
+  document.addEventListener('astro:page-load', initDrops);
+</script>

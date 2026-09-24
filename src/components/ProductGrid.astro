@@ -1,5 +1,5 @@
 ---
-import ProductCard from '@/components/ProductCard.astro';
+import CatalogProductCard from '@/components/CatalogProductCard.astro';
 import type { Product } from '@/data/products';
 
 interface Props {
@@ -13,11 +13,15 @@ const { products, eager = 4, class: className } = Astro.props;
 
 <div
   class:list={[
-    'grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3 md:gap-x-6 md:gap-y-16 xl:grid-cols-4',
+    'flex flex-col gap-3 sm:gap-4 lg:grid lg:grid-cols-3 lg:gap-x-6 lg:gap-y-14 xl:grid-cols-4',
     className,
   ]}
 >
   {products.map((product, i) => (
-    <ProductCard product={product} index={i} loading={i < eager ? 'eager' : 'lazy'} />
+    <CatalogProductCard product={product} index={i} loading={i < eager ? 'eager' : 'lazy'} />
   ))}
 </div>
+
+<p data-catalog-empty hidden class="mt-10 text-center text-taupe-deep">
+  No encontramos perfumes con esos filtros. Probá quitando alguno.
+</p>

@@ -1,0 +1,74 @@
+---
+import { Image } from 'astro:assets';
+import { COLLECTIONS } from '@/data/site';
+import womenPhoto from '@/assets/category/women.jpg';
+import menPhoto from '@/assets/category/men.jpg';
+import unisexPhoto from '@/assets/category/unisex.jpg';
+
+const items = [
+  {
+    slug: 'mujer' as const,
+    label: 'Women',
+    image: womenPhoto,
+    position: 'object-[45%_50%] sm:object-[45%_22%]',
+  },
+  {
+    slug: 'hombre' as const,
+    label: 'Men',
+    image: menPhoto,
+    position: 'object-[45%_50%] sm:object-[40%_28%]',
+  },
+  {
+    slug: 'unisex' as const,
+    label: 'Unisex',
+    image: unisexPhoto,
+    position: 'object-[50%_50%] sm:object-[50%_30%]',
+  },
+];
+---
+
+<section class="u-shell !pt-6 sm:!pt-8 md:!pt-10 pb-16 sm:pb-20 md:pb-24" aria-labelledby="categorias-title">
+  <h2 id="categorias-title" class="sr-only">Comprá por categoría</h2>
+  <div class="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 lg:gap-6 max-w-[1120px] mx-auto">
+    {items.map((item, i) => (
+      <a
+        href={COLLECTIONS[item.slug].href}
+        class="reveal group relative block aspect-[0.38/1] sm:aspect-[3/4.2] lg:aspect-[3/4.4] rounded-2xl sm:rounded-[1.25rem] overflow-hidden bg-espresso"
+        style={`--reveal-delay:${i * 80}ms`}
+        aria-label={`Comprar colección ${item.label}`}
+      >
+        <Image
+          src={item.image}
+          alt=""
+          widths={[280, 420, 620]}
+          sizes="(min-width:1024px) 22vw, 30vw"
+          loading="lazy"
+          class:list={[
+            'w-full h-full object-cover transition-transform duration-700 ease-editorial lg:group-hover:scale-105',
+            item.position,
+          ]}
+        />
+        <div
+          class="absolute inset-x-0 top-0 h-[38%] bg-gradient-to-b from-espresso/70 via-espresso/15 to-transparent pointer-events-none"
+          aria-hidden="true"
+        >
+        </div>
+        <div
+          class="absolute inset-x-0 bottom-0 h-[34%] bg-gradient-to-t from-espresso/80 via-espresso/20 to-transparent pointer-events-none"
+          aria-hidden="true"
+        >
+        </div>
+
+        <p class="absolute left-2.5 top-2.5 sm:left-4 sm:top-4 font-sans font-semibold uppercase text-ivory leading-none tracking-tight whitespace-nowrap text-[0.8rem] sm:text-[1.05rem] md:text-[1.25rem] lg:text-[1.5rem]">
+          {item.label}
+        </p>
+
+        <span class="absolute inset-x-0 bottom-2.5 sm:bottom-4 flex justify-center">
+          <span class="inline-flex items-center justify-center rounded-full bg-ivory text-espresso h-8 sm:h-10 md:h-11 px-5 sm:px-7 md:px-8 text-[0.62rem] sm:text-[0.7rem] md:text-[0.75rem] uppercase tracking-[0.14em] font-medium transition-colors group-hover:bg-caramel">
+            Shop
+          </span>
+        </span>
+      </a>
+    ))}
+  </div>
+</section>

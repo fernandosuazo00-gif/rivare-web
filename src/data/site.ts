@@ -29,6 +29,16 @@ export const SITE = {
     display: '+504 9569-6840',
   },
 
+  // --- Homepage value-grid stats ---
+  // PLACEHOLDER figures — not yet confirmed by RIVÂRE (no sales/review data
+  // exists to back them). Update here before launch; ValueGrid.astro's
+  // supporting copy repeats these numbers as static text, so re-check it too
+  // if these change materially.
+  valueStats: {
+    perfumesSold: '5,000+',
+    reviewsCount: '10,000+',
+  },
+
   // --- Business data still pending from RIVÂRE (do not invent) ---
   instagramUrl: null as string | null, // TODO: RIVÂRE Instagram
   email: null as string | null,

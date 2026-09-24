@@ -1,72 +1,61 @@
 ---
-import { Image } from 'astro:assets';
 import Base from '@/layouts/Base.astro';
 import Icon from '@/components/Icon.astro';
 import ProductCarousel from '@/components/ProductCarousel.astro';
-import GenderTiles from '@/components/GenderTiles.astro';
-import Testimonials from '@/components/Testimonials.astro';
+import ValueGrid from '@/components/ValueGrid.astro';
+import OurLatestDrops from '@/components/OurLatestDrops.astro';
+import CategoryShowcase from '@/components/CategoryShowcase.astro';
 import CustomFragranceBlock from '@/components/CustomFragranceBlock.astro';
-import AddToCart from '@/components/AddToCart.astro';
 import { productsByCollection } from '@/data/products';
 import { SITE } from '@/data/site';
-import { formatPrice } from '@/lib/format';
-import { waLink, GENERIC_WA_TEXT } from '@/lib/whatsapp';
 
 import heroPoster from '@/assets/editorial/hero-uomo-poster.jpg';
-import donnaRoses from '@/assets/editorial/donna-roses.jpg';
-import amberGold from '@/assets/editorial/amber-gold.jpg';
-import cieloSky from '@/assets/editorial/cielo-sky.jpg';
-import perfumesForEveryone from '@/assets/editorial/perfumes-for-everyone.jpg';
-import handsQuartet from '@/assets/editorial/hands-quartet.jpg';
+import editorialBiancoPoster from '@/assets/editorial/editorial-bianco-poster.jpg';
 
 const bestsellers = productsByCollection('bestsellers');
-const newArrivals = productsByCollection('novedades');
 ---
 
-<Base title={SITE.name} description={SITE.description} headerOverlay>
-  <!-- 01 — HERO: video, shopping-first ------------------------------------- -->
-  <section class="is-dark relative overflow-hidden">
-    <div class="u-shell grid lg:grid-cols-[1fr_0.85fr] lg:items-center gap-8 lg:gap-14 pt-8 pb-14 lg:pt-12 lg:pb-16">
-      <div>
-        <p class="eyebrow reveal">Eau de Parfum · 50 ml · L.600</p>
-        <h1 class="reveal mt-6 font-display font-light text-display-xl max-w-[13ch]">
-          Fragancias inspiradas en los grandes.
-        </h1>
-        <p class="reveal mt-4 font-display italic text-display-sm text-caramel">
-          Una perfumería hecha en Honduras.
-        </p>
-        <p class="reveal mt-7 max-w-[42ch] text-sand/85 text-[1.05rem] leading-relaxed">
-          No inventamos olores. Partimos de los que ya conocés y los traemos a tu precio, en tu ciudad.
-        </p>
-        <div class="reveal mt-9 flex flex-col sm:flex-row gap-3">
-          <a href="/perfumes" class="btn">
-            Comprar ahora
-            <Icon name="arrow-right" size={16} />
-          </a>
-          <a href="/perfumes/bestsellers" class="btn btn--ghost">Ver bestsellers</a>
-        </div>
-      </div>
+<Base title={SITE.name} description={SITE.description}>
+  <!-- 01 — HERO: full-bleed video, shopping-first --------------------------- -->
+  <section class="is-dark relative overflow-hidden h-[calc(100svh-6rem)] min-h-[560px] max-h-[820px] lg:h-[calc(100dvh-7rem)] lg:max-h-[860px]">
+    <video
+      poster={heroPoster.src}
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="none"
+      data-hero-video
+      class="absolute inset-0 w-full h-full object-cover object-center"
+      aria-hidden="true"
+    >
+      <source src="/videos/hero-uomo.mp4" type="video/mp4" />
+    </video>
 
-      <div class="reveal relative">
-        <div class="zoom-frame aspect-[3/4] bg-espresso-soft">
-          <video
-            poster={heroPoster.src}
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="none"
-            data-hero-video
-            class="w-full h-full object-cover"
-            aria-hidden="true"
-          >
-            <source src="/videos/hero-uomo.mp4" type="video/mp4" />
-          </video>
-        </div>
-        <p class="mt-3 text-[0.7rem] uppercase tracking-[0.18em] text-sand/55">Colección RIVÂRE · 17 fragancias</p>
+    <div class="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-espresso/90 via-espresso/25 to-transparent" aria-hidden="true"></div>
+
+    <div class="relative z-10 h-full u-shell flex flex-col justify-end pb-8 sm:pb-11 lg:pb-16">
+      <h1 class="reveal font-display font-light text-display-lg max-w-[15ch] sm:max-w-[18ch]">
+        Fragancias inspiradas en los grandes.
+      </h1>
+      <p class="reveal mt-3 font-display italic text-display-sm text-caramel">
+        Una perfumería hecha en Honduras.
+      </p>
+      <div class="reveal mt-7 sm:mt-8 grid grid-cols-2 gap-3 max-w-[420px]">
+        <a href="/perfumes" class="btn px-4 sm:px-6">Comprar ahora</a>
+        <a href="/perfumes/bestsellers" class="btn btn--ghost px-4 sm:px-6">Ver bestsellers</a>
       </div>
     </div>
   </section>
+
+  <!-- 01b — VALUE GRID: brand credibility, 4-card ---------------------------- -->
+  <ValueGrid />
+
+  <!-- 01c — OUR LATEST DROPS: portrait lifestyle carousel -------------------- -->
+  <OurLatestDrops />
+
+  <!-- 01d — CATEGORY SHOWCASE: women / men / unisex, editorial photography --- -->
+  <CategoryShowcase />
 
   <!-- 02 — BESTSELLERS ------------------------------------------------------ -->
   <section class="u-section" aria-labelledby="favoritos-title">
@@ -83,159 +72,57 @@ const newArrivals = productsByCollection('novedades');
     <ProductCarousel products={bestsellers} eager={2} />
   </section>
 
-  <!-- 03 — SHOP BY GENDER ----------------------------------------------------- -->
-  <section class="bg-ivory u-section" aria-labelledby="genero-title">
-    <div class="u-shell">
-      <p class="eyebrow reveal">Comprá por género</p>
-      <h2 id="genero-title" class="reveal mt-4 font-display text-display-md max-w-[20ch]">Una firma para cada quien</h2>
-      <div class="mt-10">
-        <GenderTiles />
-      </div>
+  <!-- 06 — EDITORIAL VIDEO CAMPAIGN ------------------------------------------- -->
+  <section
+    class="relative overflow-hidden bg-espresso h-[92svh] min-h-[600px] max-h-[920px] lg:h-[86vh] lg:min-h-[620px] lg:max-h-[820px]"
+    aria-labelledby="marca-title"
+  >
+    <video
+      poster={editorialBiancoPoster.src}
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="none"
+      data-editorial-video
+      class="absolute inset-0 w-full h-full object-cover object-[50%_38%] lg:object-[50%_60%]"
+      aria-hidden="true"
+    >
+      <source src="/videos/editorial-bianco.mp4" type="video/mp4" />
+    </video>
+
+    <div
+      class="absolute inset-x-0 top-0 h-[50%] bg-gradient-to-b from-espresso/70 via-espresso/15 to-transparent pointer-events-none"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="absolute inset-y-0 left-0 w-[75%] sm:w-[55%] bg-gradient-to-r from-espresso/55 via-espresso/10 to-transparent pointer-events-none"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative z-10 h-full u-shell flex flex-col justify-start pt-10 sm:pt-14 lg:pt-20">
+      <h2
+        id="marca-title"
+        class="reveal font-sans font-bold uppercase text-ivory leading-[1.08] tracking-tight text-[1.85rem] sm:text-[2.4rem] lg:text-[3.4rem] max-w-[15ch] sm:max-w-[20ch]"
+      >
+        Fragancias inspiradas<br />en los grandes.
+      </h2>
+      <p class="reveal mt-4 sm:mt-5 max-w-[30ch] sm:max-w-[38ch] text-ivory/85 text-[0.9rem] sm:text-[1.05rem] leading-relaxed">
+        Una perfumería hecha en Honduras. Fragancias inspiradas en aromas que ya conocés, hechas para acompañarte todos los días.
+      </p>
+      <a
+        href="/nosotros"
+        class="reveal mt-6 sm:mt-7 inline-flex items-center text-ivory text-[0.8rem] sm:text-[0.85rem] uppercase tracking-[0.16em] underline underline-offset-4 decoration-ivory/60 hover:decoration-ivory hover:text-caramel transition-colors w-fit"
+      >
+        Nosotros
+      </a>
     </div>
   </section>
-
-  <!-- 04 — "Perfumes para todos" full-bleed band --------------------------- -->
-  <a href="/perfumes" class="reveal group block relative aspect-[16/9] sm:aspect-[21/9] overflow-hidden bg-espresso" aria-label="Ver todo el catálogo RIVÂRE">
-    <Image
-      src={perfumesForEveryone}
-      alt="RIVÂRE — Perfumes para todos"
-      widths={[640, 1024, 1600]}
-      sizes="100vw"
-      loading="lazy"
-      class="w-full h-full object-cover transition-transform duration-700 ease-editorial group-hover:scale-105"
-    />
-  </a>
-
-  <!-- 05 — NEW ARRIVALS -------------------------------------------------------- -->
-  <section class="u-section" aria-labelledby="novedades-title">
-    <div class="u-shell">
-      <div class="flex flex-wrap items-end justify-between gap-6 mb-10">
-        <div>
-          <p class="eyebrow reveal">Novedades</p>
-          <h2 id="novedades-title" class="reveal mt-4 font-display text-display-md">Recién llegados</h2>
-        </div>
-        <a href="/perfumes/novedades" class="reveal inline-flex items-center gap-2 text-meta uppercase tracking-[0.16em] shrink-0">
-          <span class="link-underline">Ver todas</span>
-          <Icon name="arrow-right" size={15} />
-        </a>
-      </div>
-
-      <div class="grid sm:grid-cols-2 gap-8 sm:gap-10">
-        {newArrivals.map((product, i) => (
-          <article class="reveal group" style={`--reveal-delay:${i * 100}ms`}>
-            <a href={`/perfume/${product.slug}`} class="block">
-              <div class="zoom-frame relative bg-ivory aspect-[4/3] sm:aspect-[16/11]">
-                <Image
-                  src={product.image}
-                  alt={`Frasco de ${product.name}, Eau de Parfum 50 ml de RIVÂRE`}
-                  widths={[480, 720, 960]}
-                  sizes="(min-width:640px) 46vw, 92vw"
-                  loading="lazy"
-                  class="w-full h-full object-cover"
-                />
-                <span class="absolute left-3 top-3 text-[0.65rem] uppercase tracking-[0.18em] text-ivory bg-caramel-deep px-2 py-1">Nuevo</span>
-              </div>
-              <div class="pt-4 flex items-baseline justify-between gap-3">
-                <div>
-                  <h3 class="font-display text-[1.7rem] leading-none">{product.name}</h3>
-                  <p class="mt-1.5 font-display italic text-[1.05rem] text-taupe-deep">Inspirado en {product.inspiredBy}</p>
-                </div>
-                <span class="text-meta text-taupe-deep whitespace-nowrap shrink-0">{formatPrice(product.priceHnl)}</span>
-              </div>
-            </a>
-            <div class="mt-4">
-              <AddToCart slug={product.slug} variant="compact" label="Agregar" />
-            </div>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- 06 — EDITORIAL / STORYTELLING ------------------------------------------- -->
-  <section class="u-section overflow-hidden" aria-labelledby="marca-title">
-    <div class="u-shell grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-      <div class="reveal zoom-frame aspect-[4/5] bg-ivory order-2 lg:order-1">
-        <Image
-          src={donnaRoses}
-          alt="Fragancia Donna de RIVÂRE entre rosas"
-          widths={[480, 720, 960]}
-          sizes="(min-width:1024px) 42vw, 92vw"
-          loading="lazy"
-          class="w-full h-full object-cover"
-        />
-      </div>
-      <div class="order-1 lg:order-2">
-        <h2 id="marca-title" class="reveal font-display text-display-lg leading-[1.05]">Una perfumería hecha en Honduras.</h2>
-        <p class="reveal mt-6 font-display text-[1.3rem] leading-[1.55] text-taupe-deep max-w-[36ch]">
-          No inventamos olores. Partimos de los que ya conocés, los más reconocidos del mundo,
-          y los traemos a tu precio, en tu ciudad.
-        </p>
-        <a href="/nosotros" class="reveal mt-6 inline-flex items-center gap-2 text-meta uppercase tracking-[0.16em]">
-          <span class="link-underline">Conocé la marca</span>
-          <Icon name="arrow-right" size={15} />
-        </a>
-      </div>
-    </div>
-
-    <div class="u-shell mt-14 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-      <div class="reveal zoom-frame aspect-square bg-ivory">
-        <Image src={amberGold} alt="Amber de RIVÂRE con vainilla y ámbar" widths={[320, 480]} sizes="30vw" loading="lazy" class="w-full h-full object-cover" />
-      </div>
-      <div class="reveal zoom-frame aspect-square bg-ivory">
-        <Image src={cieloSky} alt="Cielo de RIVÂRE contra el cielo de Honduras" widths={[320, 480]} sizes="30vw" loading="lazy" class="w-full h-full object-cover" />
-      </div>
-      <div class="reveal zoom-frame aspect-square bg-espresso col-span-2 sm:col-span-1">
-        <video muted loop playsinline preload="none" data-editorial-video poster={heroPoster.src} class="w-full h-full object-cover">
-          <source src="/videos/editorial-bianco.mp4" type="video/mp4" />
-        </video>
-      </div>
-    </div>
-  </section>
-
-  <!-- 07 — SOCIAL PROOF ---------------------------------------------------- -->
-  <div class="bg-ivory">
-    <Testimonials />
-  </div>
 
   <!-- 08 — FRAGANCIAS A MEDIDA ------------------------------------------------ -->
   <CustomFragranceBlock />
-
-  <!-- 09 — BUNDLE TEASER ------------------------------------------------------ -->
-  <a href="/bundle" class="reveal group relative block aspect-[16/10] sm:aspect-[21/9] overflow-hidden bg-espresso">
-    <Image
-      src={handsQuartet}
-      alt="Manos sosteniendo fragancias RIVÂRE"
-      widths={[640, 1024, 1600]}
-      sizes="100vw"
-      loading="lazy"
-      class="w-full h-full object-cover opacity-80 transition-transform duration-700 ease-editorial group-hover:scale-105"
-    />
-    <div class="absolute inset-0 bg-gradient-to-t from-espresso/90 via-espresso/40 to-transparent flex flex-col items-start justify-end p-6 sm:p-12">
-      <p class="eyebrow">Más formas de comprar</p>
-      <h2 class="mt-3 font-display text-display-md text-ivory max-w-[18ch]">Armá tu bundle. Envío gratis desde 2, hasta 20% OFF.</h2>
-      <span class="mt-6 btn btn--ghost !text-ivory">
-        Armar mi bundle
-        <Icon name="arrow-right" size={15} />
-      </span>
-    </div>
-  </a>
-
-  <!-- 10 — FINAL CTA --------------------------------------------------------- -->
-  <section class="u-section" aria-labelledby="cta-title">
-    <div class="u-shell text-center flex flex-col items-center">
-      <p class="eyebrow reveal">RIVÂRE</p>
-      <h2 id="cta-title" class="reveal mt-5 font-display text-display-lg max-w-[14ch]">Tu próximo aroma puede estar acá.</h2>
-      <div class="reveal mt-9 flex flex-col sm:flex-row gap-3">
-        <a href="/perfumes" class="btn">Descubrir fragancias</a>
-        <a href={waLink(GENERIC_WA_TEXT)} target="_blank" rel="noopener" class="btn btn--ghost">
-          <Icon name="whatsapp" size={16} />
-          Hablar por WhatsApp
-        </a>
-      </div>
-      <p class="reveal mt-8 text-[0.75rem] uppercase tracking-[0.16em] text-taupe-deep">{SITE.brandLine}</p>
-    </div>
-  </section>
 
   <script>
     // Load + play the hero/editorial videos only once they're actually near the viewport,

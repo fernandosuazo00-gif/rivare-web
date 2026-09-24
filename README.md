@@ -93,6 +93,8 @@ Editar en `src/data/site.ts` cuando RIVÂRE los confirme:
 | Envío (cobertura y costo) | `shipping: null` |
 | Métodos de pago | `paymentMethods: null` |
 | Política de cambios | `returnPolicy: null` |
+| Perfumes vendidos / reseñas (grid de valores del home) | **Placeholder** — `SITE.valueStats` en `site.ts` (`5,000+` / `10,000+`). No son datos reales de ventas ni reseñas (no los tenemos). Actualizar ahí, y revisar el texto de apoyo en `ValueGrid.astro` si el número cambia de forma importante. |
+| Calificación (★) y conteo de reseñas por perfume (catálogo) | **Placeholder, confirmado explícitamente por el cliente** — `rating`/`reviewCount` en cada producto de `products.ts` (4.7–5.0, 39–214 reseñas). No son reseñas reales; no existen todavía. A diferencia de otros datos pendientes de esta tabla, **esto sí se pidió inventar a propósito** para la maqueta del catálogo estilo Dossier — reemplazar por datos reales en cuanto RIVÂRE tenga reseñas verificables. |
 
 Cuando haya dominio de producción, actualizar `SITE_URL` en `astro.config.mjs`.
 
@@ -112,6 +114,33 @@ Cuando haya dominio de producción, actualizar `SITE_URL` en `astro.config.mjs`.
   al catálogo (assets nuevos). No se marcó ningún producto viejo como "nuevo".
 - Precios, envío, horarios, dirección, métodos de pago y política de cambios
   siguen sin inventarse — ver tabla abajo.
+- **"Our latest drops"** (`src/components/OurLatestDrops.astro`): las 5 fotos
+  de estilo de vida (`Images/rivare#2.png`, `rivare#3.png`, `rivare_imagen3.png`,
+  `rivare#5.png`, `RIVAREIMAGEN8.jpeg`) se identificaron leyendo la etiqueta del
+  frasco en cada imagen → Diva, Ombre, Libre, Donna y Bloom, en ese orden. El
+  nombre y precio de cada card se resuelven de `products.ts` por slug (no están
+  hardcodeados), así que quedan sincronizados si el catálogo cambia.
+- **Categorías Women/Men/Unisex** (`src/components/CategoryShowcase.astro`,
+  `src/assets/category/`): 3 fotos editoriales de moda (sin frascos de
+  perfume) bajo Unsplash License, elegidas en blanco y negro para que las tres
+  se sientan de una misma campaña. Enlazan a las colecciones de género que ya
+  existían (`/perfumes/mujer|hombre|unisex`) — no se crearon rutas nuevas.
+- **Catálogo rediseñado** (`FilterBar.astro`, `CatalogProductCard.astro`,
+  `ScentBadge.astro`, `scentFamilies.ts`): la `scentFamily` de cada perfume se
+  asignó a partir de la familia olfativa REAL y documentada de la fragancia
+  que lo inspira (p. ej. Bleu de Chanel → Woody, Sauvage → Fresh) — no es
+  arbitraria. El filtro "Scent Family" solo muestra las familias que de hecho
+  aparecen en el catálogo (o en la colección/género actual), nunca la lista
+  completa. Los tres botones (FILTER, Gender, Scent Family) abren el mismo
+  panel inferior — es una simplificación intencional frente a tener tres
+  paneles separados. Esto solo aplica al catálogo (`/perfumes` y sus
+  colecciones); el carrusel de bestsellers del home y el rail de "también te
+  puede interesar" en la ficha de producto siguen usando la tarjeta anterior
+  sin cambios.
+- **Fotografía decorativa del grid de valores** (`src/assets/ingredients/`):
+  4 fotos de stock (hoja, flor, rosa, listón) bajo Unsplash License (uso
+  comercial libre, sin atribución requerida), descargadas y optimizadas
+  localmente — no son fotografía propia de RIVÂRE ni de sus productos.
 
 ## Notas legales
 

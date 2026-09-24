@@ -1,5 +1,6 @@
 import type { ImageMetadata } from 'astro';
 import type { CategorySlug, CollectionSlug } from './site';
+import type { ScentFamily } from './scentFamilies';
 
 import amber from '@/assets/products/amber.jpeg';
 import azure from '@/assets/products/azure.jpeg';
@@ -42,6 +43,13 @@ export interface Product {
   image: ImageMetadata;
   /** Precio en Lempiras (L.). Toda la línea: 600. `null` = "Precio a consultar". */
   priceHnl: number | null;
+  /** Familia olfativa primaria (para el badge/filtro del catálogo). Derivada de la
+   * familia real de la fragancia que inspira — ver `family` arriba. */
+  scentFamily: ScentFamily;
+  /** PLACEHOLDER — calificación de presentación, no reseñas reales. Ver README. */
+  rating: number;
+  /** PLACEHOLDER — conteo de presentación, no reseñas reales. Ver README. */
+  reviewCount: number;
 }
 
 export const SIZE_ML = 50;
@@ -73,6 +81,9 @@ export const products: Product[] = [
     },
     image: amber,
     priceHnl: 600,
+    scentFamily: 'amber',
+    rating: 4.9,
+    reviewCount: 214,
   },
   {
     slug: 'azure',
@@ -91,6 +102,9 @@ export const products: Product[] = [
     },
     image: azure,
     priceHnl: 600,
+    scentFamily: 'fresh',
+    rating: 4.8,
+    reviewCount: 176,
   },
   {
     slug: 'bianco',
@@ -108,6 +122,9 @@ export const products: Product[] = [
     },
     image: bianco,
     priceHnl: 600,
+    scentFamily: 'citrus',
+    rating: 4.7,
+    reviewCount: 58,
   },
   {
     slug: 'blue',
@@ -127,6 +144,9 @@ export const products: Product[] = [
     },
     image: blue,
     priceHnl: 600,
+    scentFamily: 'woody',
+    rating: 4.9,
+    reviewCount: 132,
   },
   {
     slug: 'bloom',
@@ -145,6 +165,9 @@ export const products: Product[] = [
     },
     image: bloom,
     priceHnl: 600,
+    scentFamily: 'floral',
+    rating: 4.8,
+    reviewCount: 121,
   },
   {
     slug: 'cielo',
@@ -162,6 +185,9 @@ export const products: Product[] = [
     },
     image: cielo,
     priceHnl: 600,
+    scentFamily: 'fruity',
+    rating: 4.7,
+    reviewCount: 47,
   },
   {
     slug: 'diva',
@@ -180,6 +206,9 @@ export const products: Product[] = [
     },
     image: diva,
     priceHnl: 600,
+    scentFamily: 'floral',
+    rating: 4.9,
+    reviewCount: 189,
   },
   {
     slug: 'donna',
@@ -197,6 +226,9 @@ export const products: Product[] = [
     },
     image: donna,
     priceHnl: 600,
+    scentFamily: 'floral',
+    rating: 4.8,
+    reviewCount: 64,
   },
   {
     slug: 'forte',
@@ -216,6 +248,9 @@ export const products: Product[] = [
     },
     image: forte,
     priceHnl: 600,
+    scentFamily: 'woody',
+    rating: 5.0,
+    reviewCount: 96,
   },
   {
     slug: 'libre',
@@ -233,6 +268,9 @@ export const products: Product[] = [
     },
     image: libre,
     priceHnl: 600,
+    scentFamily: 'floral',
+    rating: 4.8,
+    reviewCount: 73,
   },
   {
     slug: 'lumen',
@@ -250,6 +288,9 @@ export const products: Product[] = [
     },
     image: lumen,
     priceHnl: 600,
+    scentFamily: 'citrus',
+    rating: 4.7,
+    reviewCount: 39,
   },
   {
     slug: 'nomada',
@@ -267,6 +308,9 @@ export const products: Product[] = [
     },
     image: nomada,
     priceHnl: 600,
+    scentFamily: 'woody',
+    rating: 4.8,
+    reviewCount: 52,
   },
   {
     slug: 'ombre',
@@ -284,6 +328,9 @@ export const products: Product[] = [
     },
     image: ombre,
     priceHnl: 600,
+    scentFamily: 'leather',
+    rating: 4.7,
+    reviewCount: 61,
   },
   {
     slug: 'rose',
@@ -302,6 +349,9 @@ export const products: Product[] = [
     },
     image: rose,
     priceHnl: 600,
+    scentFamily: 'floral',
+    rating: 4.9,
+    reviewCount: 143,
   },
   {
     slug: 'royale',
@@ -319,6 +369,9 @@ export const products: Product[] = [
     },
     image: royale,
     priceHnl: 600,
+    scentFamily: 'amber',
+    rating: 4.8,
+    reviewCount: 44,
   },
   {
     slug: 'terra',
@@ -337,6 +390,9 @@ export const products: Product[] = [
     },
     image: terra,
     priceHnl: 600,
+    scentFamily: 'woody',
+    rating: 5.0,
+    reviewCount: 167,
   },
   {
     slug: 'uomo',
@@ -354,6 +410,9 @@ export const products: Product[] = [
     },
     image: uomo,
     priceHnl: 600,
+    scentFamily: 'aromatic',
+    rating: 4.7,
+    reviewCount: 55,
   },
 ];
 

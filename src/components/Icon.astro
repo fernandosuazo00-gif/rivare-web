@@ -18,7 +18,8 @@ interface Props {
     | 'truck'
     | 'tag'
     | 'chevron-left'
-    | 'chevron-right';
+    | 'chevron-right'
+    | 'sliders';
   class?: string;
   size?: number;
 }
@@ -43,6 +44,8 @@ const paths: Record<Props['name'], string> = {
   tag: '<path d="M3 3h8l10 10-8 8L3 11z"/><circle cx="8" cy="8" r="1.4" fill="currentColor" stroke="none"/>',
   'chevron-left': '<path d="M15 5l-7 7 7 7"/>',
   'chevron-right': '<path d="M9 5l7 7-7 7"/>',
+  sliders:
+    '<path d="M4 6h9M17 6h3M4 12h3M9 12h11M4 18h13M21 18h-1"/><circle cx="15" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="7" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="17" cy="18" r="2" fill="currentColor" stroke="none"/>',
 };
 ---
 

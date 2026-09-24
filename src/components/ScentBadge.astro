@@ -1,0 +1,19 @@
+---
+import { SCENT_FAMILY_LABEL, SCENT_FAMILY_BADGE, type ScentFamily } from '@/data/scentFamilies';
+
+interface Props {
+  family: ScentFamily;
+  class?: string;
+}
+const { family, class: className } = Astro.props;
+---
+
+<span
+  class:list={[
+    'inline-flex items-center rounded-full px-2.5 py-1 text-[0.62rem] font-medium uppercase tracking-[0.1em] whitespace-nowrap',
+    SCENT_FAMILY_BADGE[family],
+    className,
+  ]}
+>
+  {SCENT_FAMILY_LABEL[family]}
+</span>

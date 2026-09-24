@@ -1,6 +1,7 @@
 ---
 import Icon from '@/components/Icon.astro';
 import CategoryTabs from '@/components/CategoryTabs.astro';
+import FilterBar from '@/components/FilterBar.astro';
 import ProductGrid from '@/components/ProductGrid.astro';
 import type { Product } from '@/data/products';
 import type { CollectionSlug } from '@/data/site';
@@ -22,11 +23,16 @@ const { active, eyebrow, title, intro, products } = Astro.props;
     <p class="reveal mt-6 text-[1.05rem] leading-relaxed text-taupe-deep">{intro}</p>
   </header>
 
-  <div class="reveal mt-10 border-y border-sand py-4 sticky top-24 lg:top-28 z-30 bg-paper/95 supports-[backdrop-filter]:bg-paper/80 backdrop-blur-sm -mx-gutter px-gutter">
-    <CategoryTabs active={active} />
+  <div class="reveal mt-10 border-y border-sand sticky top-24 lg:top-28 z-30 bg-paper/95 supports-[backdrop-filter]:bg-paper/80 backdrop-blur-sm -mx-gutter px-gutter">
+    <div class="py-4">
+      <CategoryTabs active={active} />
+    </div>
+    <div class="pb-4">
+      <FilterBar products={products} />
+    </div>
   </div>
 
-  <ProductGrid products={products} eager={4} class="mt-12" />
+  <ProductGrid products={products} eager={4} class="mt-8" />
 
   <div class="mt-20 border-t border-sand pt-10 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
     <p class="font-display italic text-[1.5rem] text-taupe-deep max-w-[30ch]">

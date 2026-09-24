@@ -1,0 +1,71 @@
+---
+import { Image } from 'astro:assets';
+import { SITE } from '@/data/site';
+import craftedLeaf from '@/assets/ingredients/crafted-leaf.jpg';
+import perfumesBloom from '@/assets/ingredients/perfumes-bloom.jpg';
+import reviewsRose from '@/assets/ingredients/reviews-rose.jpg';
+import giftRibbon from '@/assets/ingredients/gift-ribbon.jpg';
+
+const { valueStats } = SITE;
+
+const cards = [
+  {
+    lines: ['Crafted in', 'Honduras'],
+    caption: 'with love and care.',
+    image: craftedLeaf,
+    position: 'object-[58%_48%]',
+  },
+  {
+    lines: [valueStats.perfumesSold, 'Perfumes'],
+    caption: 'vendidos a nivel nacional.',
+    image: perfumesBloom,
+    position: 'object-[75%_40%]',
+  },
+  {
+    lines: [valueStats.reviewsCount, 'Reviews'],
+    caption: 'más de 10,000 reseñas de 5 estrellas.',
+    image: reviewsRose,
+    position: 'object-[60%_45%]',
+  },
+  {
+    lines: ['The Perfect', 'Gift'],
+    caption: 'el regalo perfecto para él o ella.',
+    image: giftRibbon,
+    position: 'object-[15%_20%]',
+  },
+];
+---
+
+<section class="u-section !pt-10 sm:!pt-12 lg:!pt-16" aria-labelledby="valores-title">
+  <h2 id="valores-title" class="sr-only">RIVÂRE en números</h2>
+  <div class="u-shell">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-[1120px] mx-auto">
+      {cards.map((card, i) => (
+        <div
+          class="reveal group relative flex flex-col bg-ivory rounded-2xl overflow-hidden aspect-[4/5] p-4 sm:p-5 lg:p-6"
+          style={`--reveal-delay:${i * 80}ms`}
+        >
+          <Image
+            src={card.image}
+            alt=""
+            widths={[160, 240, 360]}
+            sizes="(min-width:1024px) 110px, 90px"
+            loading="lazy"
+            class:list={[
+              'absolute top-0 right-0 z-0 w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-bl-[1.5rem] sm:rounded-bl-[1.75rem] object-cover transition-transform duration-700 ease-editorial group-hover:scale-110',
+              card.position,
+            ]}
+          />
+          <div class="relative z-10 mt-auto">
+            <p class="font-display font-light text-[1.35rem] sm:text-[1.6rem] lg:text-[2rem] leading-[1.08]">
+              {card.lines[0]}<br />{card.lines[1]}
+            </p>
+            <p class="mt-2 sm:mt-2.5 text-[0.75rem] sm:text-[0.8rem] lg:text-[0.85rem] leading-snug text-taupe-deep max-w-[20ch]">
+              {card.caption}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
