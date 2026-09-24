@@ -1,0 +1,66 @@
+---
+import Icon from '@/components/Icon.astro';
+import type { Product } from '@/data/products';
+import type { CategorySlug } from '@/data/site';
+import { SCENT_FAMILY_ORDER } from '@/data/scentFamilies';
+
+interface Props {
+  products: Product[];
+}
+const { products } = Astro.props;
+
+const GENDER_ORDER: CategorySlug[] = ['mujer', 'hombre', 'unisex'];
+const showGenderFilter = GENDER_ORDER.filter((g) => products.some((p) => p.category === g)).length > 1;
+const hasScentFilter = SCENT_FAMILY_ORDER.some((f) => products.some((p) => p.scentFamily === f));
+
+const total = products.length;
+---
+
+<div data-filterbar class="reveal">
+  <div class="flex items-center gap-2 overflow-x-auto pb-1 filterbar-scroll">
+    <button
+      type="button"
+      data-filter-open="all"
+      class="shrink-0 inline-flex items-center gap-2 rounded-full border border-espresso px-4 py-2.5 text-[0.75rem] uppercase tracking-[0.12em] font-medium hover:bg-espresso hover:text-ivory transition-colors"
+    >
+      <Icon name="sliders" size={15} />
+      Filter
+      <span data-filter-total-count hidden class="tabular-nums"></span>
+    </button>
+
+    {showGenderFilter && (
+      <button
+        type="button"
+        data-filter-open="gender"
+        class="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-sand px-4 py-2.5 text-[0.75rem] uppercase tracking-[0.12em] hover:border-espresso transition-colors"
+      >
+        <span data-filter-pill-label="gender">Gender</span>
+        <Icon name="arrow-down" size={11} class="opacity-60" />
+      </button>
+    )}
+
+    {hasScentFilter && (
+      <button
+        type="button"
+        data-filter-open="scent"
+        class="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-sand px-4 py-2.5 text-[0.75rem] uppercase tracking-[0.12em] hover:border-espresso transition-colors"
+      >
+        <span data-filter-pill-label="scent">Scent Family</span>
+        <Icon name="arrow-down" size={11} class="opacity-60" />
+      </button>
+    )}
+  </div>
+
+  <p class="mt-3 text-meta text-taupe-deep">
+    <span data-catalog-count>{total}</span> perfume{total === 1 ? '' : 's'}
+  </p>
+</div>
+
+<style>
+  .filterbar-scroll {
+    scrollbar-width: none;
+  }
+  .filterbar-scroll::-webkit-scrollbar {
+    display: none;
+  }
+</style>

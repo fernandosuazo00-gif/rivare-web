@@ -18,48 +18,18 @@ const scentsPresent = SCENT_FAMILY_ORDER.filter((f) => products.some((p) => p.sc
 const total = products.length;
 ---
 
-<div data-filterbar class="reveal">
-  <div class="flex items-center gap-2 overflow-x-auto pb-1 filterbar-scroll">
-    <button
-      type="button"
-      data-filter-open="all"
-      class="shrink-0 inline-flex items-center gap-2 rounded-full border border-espresso px-4 py-2.5 text-[0.75rem] uppercase tracking-[0.12em] font-medium hover:bg-espresso hover:text-ivory transition-colors"
-    >
-      <Icon name="sliders" size={15} />
-      Filter
-      <span data-filter-total-count hidden class="tabular-nums"></span>
-    </button>
-
-    {showGenderFilter && (
-      <button
-        type="button"
-        data-filter-open="gender"
-        class="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-sand px-4 py-2.5 text-[0.75rem] uppercase tracking-[0.12em] hover:border-espresso transition-colors"
-      >
-        <span data-filter-pill-label="gender">Gender</span>
-        <Icon name="arrow-down" size={11} class="opacity-60" />
-      </button>
-    )}
-
-    {scentsPresent.length > 0 && (
-      <button
-        type="button"
-        data-filter-open="scent"
-        class="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-sand px-4 py-2.5 text-[0.75rem] uppercase tracking-[0.12em] hover:border-espresso transition-colors"
-      >
-        <span data-filter-pill-label="scent">Scent Family</span>
-        <Icon name="arrow-down" size={11} class="opacity-60" />
-      </button>
-    )}
-  </div>
-
-  <p class="mt-3 text-meta text-taupe-deep">
-    <span data-catalog-count>{total}</span> perfume{total === 1 ? '' : 's'}
-  </p>
-</div>
-
-<!-- Bottom-sheet filter drawer (shared by all 3 triggers above) -->
-<div data-filter-backdrop hidden class="fixed inset-0 z-drawer-backdrop bg-espresso/40 opacity-0 transition-opacity duration-300"></div>
+<!-- Filter drawer (opened by the 3 triggers in FilterTriggers.astro, matched
+     purely via data-attributes — no DOM nesting requirement between them).
+     Rendered as a sibling of the sticky category/filter bar (see
+     CollectionView.astro), NOT nested inside it: that sticky bar has a
+     `.reveal` ancestor using `will-change: transform`, and per the CSS spec
+     `will-change: transform` establishes a new containing block for
+     `position: fixed` descendants — so a fixed-position drawer nested inside
+     it would be positioned relative to that sticky bar instead of the real
+     viewport, which was the root cause of it rendering behind the header.
+     Full-screen overlay on mobile/tablet (sits above the fixed header,
+     safe-area aware), bottom-sheet on desktop (unchanged from before). -->
+<div data-filter-backdrop hidden class="fixed inset-0 z-[105] bg-espresso/40 opacity-0 transition-opacity duration-300"></div>
 
 <div
   data-filter-sheet
@@ -67,11 +37,11 @@ const total = products.length;
   aria-hidden="true"
   role="dialog"
   aria-label="Filtros"
-  class="fixed inset-x-0 bottom-0 z-drawer max-h-[82vh] bg-paper rounded-t-2xl translate-y-full transition-transform duration-300 ease-editorial flex flex-col shadow-[0_-10px_50px_rgba(42,32,24,0.18)]"
+  class="filter-sheet fixed inset-x-0 top-0 lg:top-auto lg:bottom-0 z-[110] lg:max-h-[82vh] bg-paper lg:rounded-t-2xl -translate-y-full lg:translate-y-full transition-transform duration-300 ease-editorial flex flex-col shadow-[0_-10px_50px_rgba(42,32,24,0.18)]"
 >
-  <div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-sand shrink-0">
+  <div class="filter-sheet__header flex items-center justify-between px-5 pb-4 border-b border-sand shrink-0">
     <p class="font-display text-[1.3rem]">Filtros</p>
-    <button type="button" data-filter-close class="inline-flex items-center justify-center w-10 h-10 -mr-2" aria-label="Cerrar filtros">
+    <button type="button" data-filter-close class="inline-flex items-center justify-center w-11 h-11 -mr-2" aria-label="Cerrar filtros">
       <Icon name="close" size={18} />
     </button>
   </div>
@@ -112,7 +82,7 @@ const total = products.length;
     )}
   </div>
 
-  <div class="shrink-0 border-t border-sand p-5 flex items-center gap-5">
+  <div class="filter-sheet__footer shrink-0 border-t border-sand px-5 pt-5 flex items-center gap-5">
     <button type="button" data-filter-clear class="text-meta uppercase tracking-[0.14em] text-taupe-deep underline underline-offset-4 shrink-0 whitespace-nowrap">
       Clear all
     </button>
@@ -128,6 +98,33 @@ const total = products.length;
   }
   .filterbar-scroll::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Mobile/tablet: true full-screen overlay, dvh-based so iOS Safari's
+     collapsing address bar can't clip or over-extend the panel, with
+     safe-area padding on the header/footer edges that touch the notch and
+     home-indicator area. */
+  .filter-sheet {
+    height: 100dvh;
+  }
+  .filter-sheet__header {
+    padding-top: max(1.25rem, calc(env(safe-area-inset-top, 0px) + 0.75rem));
+  }
+  .filter-sheet__footer {
+    padding-bottom: max(1.25rem, calc(env(safe-area-inset-bottom, 0px) + 0.75rem));
+  }
+
+  /* Desktop: restore the original capped-height bottom-sheet exactly as before. */
+  @media (min-width: 1024px) {
+    .filter-sheet {
+      height: auto;
+    }
+    .filter-sheet__header {
+      padding-top: 1.25rem;
+    }
+    .filter-sheet__footer {
+      padding-bottom: 1.25rem;
+    }
   }
 </style>
 

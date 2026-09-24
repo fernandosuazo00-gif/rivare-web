@@ -1,6 +1,7 @@
 ---
 import Icon from '@/components/Icon.astro';
 import CategoryTabs from '@/components/CategoryTabs.astro';
+import FilterTriggers from '@/components/FilterTriggers.astro';
 import FilterBar from '@/components/FilterBar.astro';
 import ProductGrid from '@/components/ProductGrid.astro';
 import type { Product } from '@/data/products';
@@ -28,9 +29,11 @@ const { active, eyebrow, title, intro, products } = Astro.props;
       <CategoryTabs active={active} />
     </div>
     <div class="pb-4">
-      <FilterBar products={products} />
+      <FilterTriggers products={products} />
     </div>
   </div>
+
+  <FilterBar products={products} />
 
   <ProductGrid products={products} eager={4} class="mt-8" />
 
