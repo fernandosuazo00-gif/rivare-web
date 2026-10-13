@@ -144,14 +144,14 @@ Cuando haya dominio de producción, actualizar `SITE_URL` en `astro.config.mjs`.
   la etiqueta no indica versión; elegida por el cliente). Notas y familia
   (You → Warm, Chance y Amore → Floral) tomadas de referencias públicas
   (Fragrantica, Parfumo, sitios oficiales de las casas).
-  **Café:** la etiqueta del frasco dice "Carolina Herrera Café Men". Ese texto
-  se muestra tal cual ("Inspirado en Carolina Herrera Café Men") como
-  referencia de la etiqueta de marca, pero **no está verificado**: no existe
-  ese perfume en el catálogo de Carolina Herrera según las fuentes públicas
-  consultadas. Por eso no se le atribuyen notas, familia olfativa ni badge, y
-  queda fuera del filtro Scent Family hasta que la marca confirme la
-  referencia. Para completarlo, llenar `family`, `notes` y `scentFamily` en
-  `products.ts` (hoy `null`); todo el sitio ya soporta ambos casos.
+  **Café:** la etiqueta del frasco decía "Carolina Herrera Café Men", pero ese
+  perfume no existe; el cliente confirmó que la referencia correcta es
+  *CH Men* de Carolina Herrera (2009). Familia asignada por el cliente:
+  amaderada, cuero y floral → badge Woody. Notas (salida: pomelo, hojas de
+  violeta; corazón: azafrán, ciclamen; fondo: cashmeran, cuero) provistas por
+  el cliente como notas de la fragancia de referencia. Ojo: algunas bases de
+  datos públicas listan una pirámide más amplia y la clasifican como Amber
+  Spicy. La etiqueta impresa del frasco aún dice "Café Men".
   **Chance** se muestra como "Chance de Chanel".
 - **Conteos derivados del catálogo:** "N fragancias" en Nosotros, Fragancias a
   medida, carrito vacío y la descripción de /perfumes salen de `products.length`.

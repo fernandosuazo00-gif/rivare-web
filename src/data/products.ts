@@ -205,21 +205,24 @@ export const products: Product[] = [
   {
     slug: 'cafe',
     name: 'Café',
-    // Texto tal cual figura en la etiqueta del frasco RIVÂRE. No está verificado de forma
-    // independiente contra un perfume real de Carolina Herrera — ver README.
-    inspiredBy: 'Carolina Herrera Café Men',
+    inspiredBy: 'CH Men de Carolina Herrera',
     house: null,
     category: 'hombre',
-    family: null,
-    character: 'Una fragancia masculina de presencia elegante y carácter propio, pensada para acompañarte con naturalidad en tu día a día.',
+    family: 'Amaderada, cuero y floral',
+    character: 'CAFÉ es una fragancia masculina de carácter elegante y sofisticado, inspirada en CH Men de Carolina Herrera. Combina una apertura fresca y ligeramente cítrica con matices especiados, maderas cálidas y un fondo de cuero suave y vainilla. Un aroma con personalidad, ideal para quienes buscan un equilibrio entre frescura, calidez y elegancia.',
     use: 'Diario · ocasiones especiales',
-    notes: null,
+    notes: {
+      top: ['Pomelo', 'Hojas de violeta'],
+      heart: ['Azafrán', 'Ciclamen'],
+      base: ['Cashmeran', 'Cuero'],
+    },
     image: cafe,
     priceHnl: 600,
-    scentFamily: null,
+    scentFamily: 'woody',
     rating: 4.8,
     reviewCount: 41,
   },
+
   {
     slug: 'chance',
     name: 'Chance',
