@@ -93,7 +93,7 @@ Editar en `src/data/site.ts` cuando RIVÂRE los confirme:
 | Envío (cobertura y costo) | `shipping: null` |
 | Métodos de pago | `paymentMethods: null` |
 | Política de cambios | `returnPolicy: null` |
-| Perfumes vendidos / reseñas (grid de valores del home) | **Placeholder** — `SITE.valueStats` en `site.ts` (`5,000+` / `10,000+`). No son datos reales de ventas ni reseñas (no los tenemos). Actualizar ahí, y revisar el texto de apoyo en `ValueGrid.astro` si el número cambia de forma importante. |
+| Perfumes vendidos / reseñas (grid de valores del home) | **Sin cifras a propósito.** No existen datos verificables de ventas ni reseñas, así que las tarjetas del home usan mensajes de confianza sin números ("Para cada estilo", "Descubrí tu aroma ideal"). Si RIVÂRE tiene cifras reales, agregarlas en `ValueGrid.astro`. |
 | Calificación (★) y conteo de reseñas por perfume (catálogo) | **Placeholder, confirmado explícitamente por el cliente** — `rating`/`reviewCount` en cada producto de `products.ts` (4.7–5.0, 39–214 reseñas; incluye los 4 perfumes agregados después: Café, You, Chance y Amore). No son reseñas reales; no existen todavía. A diferencia de otros datos pendientes de esta tabla, **esto sí se pidió inventar a propósito** para la maqueta del catálogo estilo Dossier — reemplazar por datos reales en cuanto RIVÂRE tenga reseñas verificables. |
 
 Cuando haya dominio de producción, actualizar `SITE_URL` en `astro.config.mjs`.

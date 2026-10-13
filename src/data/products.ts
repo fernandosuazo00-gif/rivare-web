@@ -329,8 +329,8 @@ export const products: Product[] = [
   {
     slug: 'libre',
     name: 'Libre',
-    inspiredBy: 'Libre',
-    house: 'Yves Saint Laurent',
+    inspiredBy: 'Libre de YSL',
+    house: null,
     category: 'mujer',
     family: 'Floral aromática',
     character: 'La tensión entre lavanda y flor de azahar, resuelta en vainilla y almizcle.',
