@@ -12,14 +12,14 @@ const itemListLd = {
     '@type': 'ListItem',
     position: i + 1,
     url: new URL(`/perfume/${p.slug}`, Astro.site).href,
-    name: `${p.name} — inspirado en ${p.inspiredBy}`,
+    name: p.inspiredBy ? `${p.name} — inspirado en ${p.inspiredBy}` : p.name,
   })),
 };
 ---
 
 <Base
   title="Perfumes"
-  description="Las 17 fragancias RIVÂRE en Eau de Parfum, 50 ml. Perfumes inspirados en los grandes, hechos en Honduras — para hombre, para mujer y unisex."
+  description={`Las ${products.length} fragancias RIVÂRE en Eau de Parfum, 50 ml. Perfumes inspirados en los grandes, hechos en Honduras — para hombre, para mujer y unisex.`}
   jsonLd={itemListLd}
 >
   <CollectionView

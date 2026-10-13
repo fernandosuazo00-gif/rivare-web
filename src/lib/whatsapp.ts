@@ -7,13 +7,16 @@ export function waLink(text: string): string {
 }
 
 /** Message for "Ordenar por WhatsApp" from a single product page. */
-export function productOrderText(p: { name: string; inspiredBy: string; priceHnl: number | null }): string {
+/** " — inspirado en X" or '' when the inspiration isn't verified yet. */
+const inspiredPart = (inspiredBy: string | null): string => (inspiredBy ? ` — inspirado en ${inspiredBy}` : '');
+
+export function productOrderText(p: { name: string; inspiredBy: string | null; priceHnl: number | null }): string {
   const price = p.priceHnl != null ? ` — ${formatPrice(p.priceHnl)}` : '';
   const totalLine = p.priceHnl != null ? ['', `Total: ${formatPrice(p.priceHnl)}`] : [];
   return [
     'Hola RIVÂRE 👋 Quiero pedir esta fragancia:',
     '',
-    `• 1x ${p.name} — inspirado en ${p.inspiredBy} — Eau de Parfum 50 ml${price}`,
+    `• 1x ${p.name}${inspiredPart(p.inspiredBy)} — Eau de Parfum 50 ml${price}`,
     ...totalLine,
     '',
     '¿Me pueden confirmar disponibilidad?',
@@ -31,7 +34,7 @@ export function customFragranceText(reference?: string): string {
 
 export interface CartOrderLine {
   name: string;
-  inspiredBy: string;
+  inspiredBy: string | null;
   qty: number;
   priceHnl: number | null;
 }
@@ -45,7 +48,7 @@ export function cartOrderText(lines: CartOrderLine[]): string {
   const items = lines.map((l) => {
     const priced = l.priceHnl != null;
     const lineTotal = priced ? ` — ${formatPrice(l.priceHnl! * l.qty)}` : '';
-    return `• ${l.qty}x ${l.name} — inspirado en ${l.inspiredBy} — 50 ml${lineTotal}`;
+    return `• ${l.qty}x ${l.name}${inspiredPart(l.inspiredBy)} — 50 ml${lineTotal}`;
   });
 
   const allPriced = lines.every((l) => l.priceHnl != null);

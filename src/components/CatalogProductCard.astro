@@ -4,7 +4,7 @@ import AddToCart from '@/components/AddToCart.astro';
 import RatingStars from '@/components/RatingStars.astro';
 import ScentBadge from '@/components/ScentBadge.astro';
 import { formatPrice } from '@/lib/format';
-import type { Product } from '@/data/products';
+import { inspiredLabel, inspiredInline, type Product } from '@/data/products';
 
 interface Props {
   product: Product;
@@ -14,6 +14,8 @@ interface Props {
 const { product, index = 0, loading = 'lazy' } = Astro.props;
 const href = `/perfume/${product.slug}`;
 const delay = Math.min(index, 5) * 60;
+const inspired = inspiredLabel(product);
+const inspiredMid = inspiredInline(product);
 ---
 
 <article
@@ -21,9 +23,11 @@ const delay = Math.min(index, 5) * 60;
   style={`--reveal-delay:${delay}ms`}
   data-catalog-card
   data-gender={product.category}
-  data-scent={product.scentFamily}
+  data-scent={product.scentFamily ?? undefined}
 >
-  <ScentBadge family={product.scentFamily} class="absolute right-2.5 top-2.5 z-10 lg:right-3 lg:top-3" />
+  {product.scentFamily && (
+    <ScentBadge family={product.scentFamily} class="absolute right-2.5 top-2.5 z-10 lg:right-3 lg:top-3" />
+  )}
 
   <a href={href} tabindex="-1" aria-hidden="true" class="relative block shrink-0 w-[36%] sm:w-[33%] lg:w-full aspect-[3/4] bg-paper overflow-hidden">
     <Image
@@ -37,7 +41,7 @@ const delay = Math.min(index, 5) * 60;
   </a>
 
   <div class="flex-1 min-w-0 flex flex-col p-3 sm:p-4 lg:p-4">
-    <a href={href} class="block min-w-0" aria-label={`${product.name} — inspirado en ${product.inspiredBy}, ${formatPrice(product.priceHnl)}`}>
+    <a href={href} class="block min-w-0" aria-label={`${product.name}${inspiredMid ? ` — ${inspiredMid}` : ''}, ${formatPrice(product.priceHnl)}`}>
       <h3 class="font-display text-[1.05rem] sm:text-[1.2rem] lg:text-[1.3rem] leading-tight truncate pr-14 lg:pr-0">
         {product.name}
       </h3>
@@ -47,9 +51,11 @@ const delay = Math.min(index, 5) * 60;
           {product.rating.toFixed(1)} ({product.reviewCount})
         </span>
       </div>
-      <p class="mt-1.5 font-display italic text-[0.82rem] sm:text-[0.9rem] text-taupe-deep truncate">
-        Inspirado en {product.inspiredBy}
-      </p>
+      {inspired && (
+        <p class="mt-1.5 font-display italic text-[0.82rem] sm:text-[0.9rem] text-taupe-deep truncate">
+          {inspired}
+        </p>
+      )}
       <p class="mt-1 text-[0.65rem] uppercase tracking-[0.12em] text-taupe-deep">Eau de Parfum · 50 ml</p>
       <p class="mt-1.5 font-display text-[1rem] sm:text-[1.05rem]">{formatPrice(product.priceHnl)}</p>
     </a>

@@ -3,10 +3,13 @@ import type { CategorySlug, CollectionSlug } from './site';
 import type { ScentFamily } from './scentFamilies';
 
 import amber from '@/assets/products/amber.jpeg';
+import amore from '@/assets/products/amore.jpg';
 import azure from '@/assets/products/azure.jpeg';
 import bianco from '@/assets/products/bianco.jpeg';
 import blue from '@/assets/products/blue.jpeg';
 import bloom from '@/assets/products/bloom.jpeg';
+import cafe from '@/assets/products/cafe.jpg';
+import chance from '@/assets/products/chance.jpg';
 import cielo from '@/assets/products/cielo.jpeg';
 import diva from '@/assets/products/diva.jpeg';
 import donna from '@/assets/products/donna.jpeg';
@@ -19,33 +22,35 @@ import rose from '@/assets/products/rose.jpeg';
 import royale from '@/assets/products/royale.jpeg';
 import terra from '@/assets/products/terra.jpeg';
 import uomo from '@/assets/products/uomo.jpeg';
+import you from '@/assets/products/you.jpg';
 
 export interface Product {
   slug: string;
   name: string;
-  /** Nombre de la fragancia que inspira este perfume. */
-  inspiredBy: string;
+  /** Nombre de la fragancia que inspira este perfume. `null` = referencia aún no verificada (no se muestra). */
+  inspiredBy: string | null;
   /** Casa original de esa fragancia (solo referencia — RIVÂRE es independiente). */
-  house: string;
+  house: string | null;
   category: CategorySlug;
   /** Colección "Bestsellers" — subset curado para mercadeo, sin cifras inventadas. */
   bestseller?: boolean;
   /** Colección "Novedades" — recién incorporado al catálogo. */
   isNew?: boolean;
-  /** Familia olfativa de la fragancia que inspira. */
-  family: string;
+  /** Familia olfativa de la fragancia que inspira. `null` = sin verificar. */
+  family: string | null;
   /** Frase editorial breve del carácter del aroma. */
   character: string;
   /** Momento / uso sugerido. */
   use: string;
   /** Pirámide de la fragancia que INSPIRA (no es la fórmula de RIVÂRE). */
-  notes: { top: string[]; heart: string[]; base: string[] };
+  notes: { top: string[]; heart: string[]; base: string[] } | null;
   image: ImageMetadata;
   /** Precio en Lempiras (L.). Toda la línea: 600. `null` = "Precio a consultar". */
   priceHnl: number | null;
   /** Familia olfativa primaria (para el badge/filtro del catálogo). Derivada de la
-   * familia real de la fragancia que inspira — ver `family` arriba. */
-  scentFamily: ScentFamily;
+   * familia real de la fragancia que inspira — ver `family` arriba.
+   * `null` = sin verificar: no muestra badge y queda fuera del filtro Scent Family. */
+  scentFamily: ScentFamily | null;
   /** PLACEHOLDER — calificación de presentación, no reseñas reales. Ver README. */
   rating: number;
   /** PLACEHOLDER — conteo de presentación, no reseñas reales. Ver README. */
@@ -62,6 +67,14 @@ export const SIZE_LABEL = 'Eau de Parfum · 50 ml / 1.7 fl oz';
  */
 export const NOTES_DISCLAIMER =
   'Las notas corresponden a la fragancia que inspira este perfume. RIVÂRE es una interpretación independiente y no está afiliada a las casas originales.';
+
+/** "Inspirado en X" — `null` cuando la inspiración de ese perfume aún no está verificada. */
+export const inspiredLabel = (p: { inspiredBy: string | null }): string | null =>
+  p.inspiredBy ? `Inspirado en ${p.inspiredBy}` : null;
+
+/** Same, mid-sentence (lowercase "inspirado"): titles, alt text, aria-labels. */
+export const inspiredInline = (p: { inspiredBy: string | null }): string | null =>
+  p.inspiredBy ? `inspirado en ${p.inspiredBy}` : null;
 
 export const products: Product[] = [
   {
@@ -84,6 +97,26 @@ export const products: Product[] = [
     scentFamily: 'amber',
     rating: 4.9,
     reviewCount: 214,
+  },
+  {
+    slug: 'amore',
+    name: 'Amore',
+    inspiredBy: 'Miss Dior',
+    house: 'Dior',
+    category: 'mujer',
+    family: 'Floral chypre vainillada',
+    character: 'Peonía e iris abren sobre un corazón de rosa, durazno y albaricoque, y se funden en un fondo cremoso de vainilla, haba tonka y sándalo. Romántico, empolvado y femenino.',
+    use: 'Día y noche · ocasiones especiales',
+    notes: {
+      top: ['Iris', 'Peonía', 'Lirio del valle'],
+      heart: ['Rosa', 'Albaricoque', 'Durazno'],
+      base: ['Vainilla', 'Almizcle', 'Haba tonka', 'Sándalo', 'Benjuí'],
+    },
+    image: amore,
+    priceHnl: 600,
+    scentFamily: 'floral',
+    rating: 4.8,
+    reviewCount: 59,
   },
   {
     slug: 'azure',
@@ -168,6 +201,42 @@ export const products: Product[] = [
     scentFamily: 'floral',
     rating: 4.8,
     reviewCount: 121,
+  },
+  {
+    slug: 'cafe',
+    name: 'Café',
+    inspiredBy: null,
+    house: null,
+    category: 'hombre',
+    family: null,
+    character: 'Una fragancia masculina de presencia elegante y carácter propio, pensada para acompañarte con naturalidad en tu día a día.',
+    use: 'Diario · ocasiones especiales',
+    notes: null,
+    image: cafe,
+    priceHnl: 600,
+    scentFamily: null,
+    rating: 4.8,
+    reviewCount: 41,
+  },
+  {
+    slug: 'chance',
+    name: 'Chance',
+    inspiredBy: 'Chance',
+    house: 'Chanel',
+    category: 'mujer',
+    family: 'Floral chypre almizclada',
+    character: 'Un floral luminoso de jacinto, iris y jazmín con un destello de pimienta rosa, sobre un fondo suave de almizcle, vainilla y pachulí. Alegre, elegante y atemporal.',
+    use: 'Diario · de día a noche',
+    notes: {
+      top: ['Pimienta rosa', 'Piña', 'Jacinto', 'Iris'],
+      heart: ['Jazmín', 'Limón', 'Rosa'],
+      base: ['Pachulí', 'Vetiver', 'Almizcle', 'Vainilla'],
+    },
+    image: chance,
+    priceHnl: 600,
+    scentFamily: 'floral',
+    rating: 4.9,
+    reviewCount: 87,
   },
   {
     slug: 'cielo',
@@ -413,6 +482,26 @@ export const products: Product[] = [
     scentFamily: 'aromatic',
     rating: 4.7,
     reviewCount: 55,
+  },
+  {
+    slug: 'you',
+    name: 'You',
+    inspiredBy: 'Stronger With You',
+    house: 'Emporio Armani',
+    category: 'hombre',
+    family: 'Aromática especiada vainillada',
+    character: 'Cardamomo y pimienta rosa abren sobre lavanda y salvia, y se asientan en un fondo cálido de vainilla, castaña y ámbar. Dulce, especiado y seguro de sí mismo.',
+    use: 'Noche · salidas · clima fresco',
+    notes: {
+      top: ['Cardamomo', 'Pimienta rosa', 'Hoja de violeta'],
+      heart: ['Salvia', 'Lavanda'],
+      base: ['Vainilla', 'Castaña', 'Ámbar', 'Cedro'],
+    },
+    image: you,
+    priceHnl: 600,
+    scentFamily: 'warm',
+    rating: 4.8,
+    reviewCount: 68,
   },
 ];
 

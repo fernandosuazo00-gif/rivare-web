@@ -171,7 +171,7 @@ const faqLd = {
             </div>
             <div class="pt-4">
               <h3 class="font-display text-[1.4rem] leading-tight">{p.name}</h3>
-              <p class="mt-1 font-display italic text-[0.95rem] text-taupe-deep">Inspirado en {p.inspiredBy}</p>
+              {p.inspiredBy && <p class="mt-1 font-display italic text-[0.95rem] text-taupe-deep">Inspirado en {p.inspiredBy}</p>}
               <p class="mt-2 text-[0.7rem] uppercase tracking-[0.13em] text-taupe-deep">{formatPrice(p.priceHnl)} · 50 ml</p>
             </div>
             <button type="button" data-picker-toggle class="btn btn--ghost w-full mt-3">
@@ -195,7 +195,7 @@ const faqLd = {
   interface CatalogItem {
     slug: string;
     name: string;
-    inspiredBy: string;
+    inspiredBy: string | null;
     category: string;
     thumb: string;
     priceHnl: number | null;

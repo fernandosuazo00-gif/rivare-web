@@ -3,6 +3,7 @@ import Base from '@/layouts/Base.astro';
 import Icon from '@/components/Icon.astro';
 import CustomFragranceBlock from '@/components/CustomFragranceBlock.astro';
 import { SITE } from '@/data/site';
+import { products } from '@/data/products';
 import { waLink, customFragranceText } from '@/lib/whatsapp';
 
 const steps = [
@@ -32,7 +33,7 @@ const faqLd = {
       name: '¿Qué es una fragancia a medida de RIVÂRE?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Si el perfume que buscás no está entre las 15 fragancias del catálogo, RIVÂRE lo recrea para vos en Eau de Parfum de 50 ml, con la misma intensidad y duración de la línea.',
+        text: `Si el perfume que buscás no está entre las ${products.length} fragancias del catálogo, RIVÂRE lo recrea para vos en Eau de Parfum de 50 ml, con la misma intensidad y duración de la línea.`,
       },
     },
     {
@@ -61,7 +62,7 @@ const faqLd = {
       Te la hacemos.
     </p>
     <p class="reveal mt-8 max-w-[50ch] text-[1.1rem] leading-relaxed text-taupe-deep">
-      Si el aroma que amás no está entre las 15 fragancias de RIVÂRE, no te quedás sin él.
+      Si el aroma que amás no está entre las {products.length} fragancias de RIVÂRE, no te quedás sin él.
       Decinos cuál es y lo recreamos en Eau de Parfum, 50 ml, con la intensidad y
       duración de la casa.
     </p>

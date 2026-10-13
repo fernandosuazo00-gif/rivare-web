@@ -2,7 +2,7 @@
 
 Catálogo premium, shopping-first (referencia de UX: Dossier.eu), + funnel de
 WhatsApp para **RIVÂRE**, una perfumería hecha en Honduras (Tegucigalpa).
-17 fragancias, Eau de Parfum 50 ml, L.600 cada una, inspiradas en las
+21 fragancias, Eau de Parfum 50 ml, L.600 cada una, inspiradas en las
 fragancias más reconocidas del mundo.
 
 No es un e-commerce con pago en línea: el cliente **arma su selección** (o su
@@ -34,7 +34,7 @@ src/
   data/
     site.ts          # WhatsApp, navegación agrupada (NAV_GROUPS), colecciones
                        # y DATOS DE NEGOCIO PENDIENTES
-    products.ts       # las 17 fragancias (slug, género, bestseller/isNew, notas)
+    products.ts       # las 21 fragancias (slug, género, bestseller/isNew, notas)
     testimonials.ts   # testimonios reales de clientes (Instagram)
   lib/
     cart.ts           # store del carrito (localStorage + eventos)
@@ -49,7 +49,7 @@ src/
                           # editorial + testimonios + bundle teaser
     bundle.astro           # Armá tu bundle: 9 slots, milestones, resumen
     perfumes/               # /perfumes + /perfumes/[bestsellers|novedades|hombre|mujer|unisex]
-    perfume/[slug].astro    # ficha de producto (17 rutas)
+    perfume/[slug].astro    # ficha de producto (una ruta por fragancia)
     fragancias-a-medida.astro
     nosotros.astro · contacto.astro · faq.astro
 design-system/MASTER.md  # sistema de diseño (fuente de verdad)
@@ -94,7 +94,7 @@ Editar en `src/data/site.ts` cuando RIVÂRE los confirme:
 | Métodos de pago | `paymentMethods: null` |
 | Política de cambios | `returnPolicy: null` |
 | Perfumes vendidos / reseñas (grid de valores del home) | **Placeholder** — `SITE.valueStats` en `site.ts` (`5,000+` / `10,000+`). No son datos reales de ventas ni reseñas (no los tenemos). Actualizar ahí, y revisar el texto de apoyo en `ValueGrid.astro` si el número cambia de forma importante. |
-| Calificación (★) y conteo de reseñas por perfume (catálogo) | **Placeholder, confirmado explícitamente por el cliente** — `rating`/`reviewCount` en cada producto de `products.ts` (4.7–5.0, 39–214 reseñas). No son reseñas reales; no existen todavía. A diferencia de otros datos pendientes de esta tabla, **esto sí se pidió inventar a propósito** para la maqueta del catálogo estilo Dossier — reemplazar por datos reales en cuanto RIVÂRE tenga reseñas verificables. |
+| Calificación (★) y conteo de reseñas por perfume (catálogo) | **Placeholder, confirmado explícitamente por el cliente** — `rating`/`reviewCount` en cada producto de `products.ts` (4.7–5.0, 39–214 reseñas; incluye los 4 perfumes agregados después: Café, You, Chance y Amore). No son reseñas reales; no existen todavía. A diferencia de otros datos pendientes de esta tabla, **esto sí se pidió inventar a propósito** para la maqueta del catálogo estilo Dossier — reemplazar por datos reales en cuanto RIVÂRE tenga reseñas verificables. |
 
 Cuando haya dominio de producción, actualizar `SITE_URL` en `astro.config.mjs`.
 
@@ -137,6 +137,22 @@ Cuando haya dominio de producción, actualizar `SITE_URL` en `astro.config.mjs`.
   colecciones); el carrusel de bestsellers del home y el rail de "también te
   puede interesar" en la ficha de producto siguen usando la tarjeta anterior
   sin cambios.
+- **Cuatro fragancias agregadas (17 → 21):** Café (hombre), You (hombre),
+  Chance (mujer) y Amore (mujer). Inspiración leída de la etiqueta de cada
+  frasco: You → *Stronger With You* (Emporio Armani), Chance → *Chance*
+  (Chanel, versión original), Amore → *Miss Dior* (Dior, Eau de Parfum 2021 —
+  la etiqueta no indica versión; elegida por el cliente). Notas y familia
+  (You → Warm, Chance y Amore → Floral) tomadas de referencias públicas
+  (Fragrantica, Parfumo, sitios oficiales de las casas).
+  **Café queda sin inspiración ni familia olfativa a propósito:** la etiqueta
+  dice "Carolina Herrera Café Men", pero no existe ese perfume en el catálogo
+  de Carolina Herrera y no se pudo verificar. Por pedido del cliente se muestra
+  solo como RIVÂRE Café (sin "Inspirado en", sin notas, sin badge de familia y
+  fuera del filtro Scent Family) hasta que la marca confirme la referencia.
+  Para completarlo, llenar `inspiredBy`, `house`, `family`, `notes` y
+  `scentFamily` en `products.ts` (hoy `null`); todo el sitio ya soporta ambos casos.
+- **Conteos derivados del catálogo:** "N fragancias" en Nosotros, Fragancias a
+  medida, carrito vacío y la descripción de /perfumes salen de `products.length`.
 - **Fotografía decorativa del grid de valores** (`src/assets/ingredients/`):
   4 fotos de stock (hoja, flor, rosa, listón) bajo Unsplash License (uso
   comercial libre, sin atribución requerida), descargadas y optimizadas

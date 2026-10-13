@@ -50,7 +50,7 @@ const catalog = await Promise.all(
 
     <div data-cart-empty hidden class="flex-1 flex flex-col items-center justify-center text-center px-8 gap-4">
       <p class="font-display text-display-sm">Tu carrito está vacío</p>
-      <p class="text-meta text-taupe-deep max-w-[28ch]">Explorá las 15 fragancias RIVÂRE y agregá tus favoritas.</p>
+      <p class="text-meta text-taupe-deep max-w-[28ch]">Explorá las {products.length} fragancias RIVÂRE y agregá tus favoritas.</p>
       <a href="/perfumes" class="btn btn--ghost mt-2" data-cart-close>Ver perfumes</a>
     </div>
 
@@ -86,7 +86,7 @@ const catalog = await Promise.all(
   interface CatalogItem {
     slug: string;
     name: string;
-    inspiredBy: string;
+    inspiredBy: string | null;
     href: string;
     thumb: string;
     priceHnl: number | null;
@@ -165,7 +165,7 @@ const catalog = await Promise.all(
             <a href="${p.href}" class="font-display text-[1.35rem] leading-tight">${p.name}</a>
             <span class="text-meta tabular-nums shrink-0">${lineTotal}</span>
           </div>
-          <p class="text-[0.75rem] italic text-taupe-deep">Inspirado en ${p.inspiredBy}</p>
+          ${p.inspiredBy ? `<p class="text-[0.75rem] italic text-taupe-deep">Inspirado en ${p.inspiredBy}</p>` : ''}
           <p class="text-[0.7rem] uppercase tracking-[0.12em] text-taupe-deep mt-0.5">EDP · 50 ml${unit ? ` · ${unit} c/u` : ''}</p>
           <div class="flex items-center justify-between mt-3">
             <div class="inline-flex items-center border border-sand">
