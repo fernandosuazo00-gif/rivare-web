@@ -205,7 +205,9 @@ export const products: Product[] = [
   {
     slug: 'cafe',
     name: 'Café',
-    inspiredBy: null,
+    // Texto tal cual figura en la etiqueta del frasco RIVÂRE. No está verificado de forma
+    // independiente contra un perfume real de Carolina Herrera — ver README.
+    inspiredBy: 'Carolina Herrera Café Men',
     house: null,
     category: 'hombre',
     family: null,
@@ -221,8 +223,8 @@ export const products: Product[] = [
   {
     slug: 'chance',
     name: 'Chance',
-    inspiredBy: 'Chance',
-    house: 'Chanel',
+    inspiredBy: 'Chance de Chanel',
+    house: null,
     category: 'mujer',
     family: 'Floral chypre almizclada',
     character: 'Un floral luminoso de jacinto, iris y jazmín con un destello de pimienta rosa, sobre un fondo suave de almizcle, vainilla y pachulí. Alegre, elegante y atemporal.',
